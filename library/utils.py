@@ -6,6 +6,132 @@ import yaml
 from pathlib import Path
 from typing import Any, Dict, List, Union
 
+def plot_heat_load(df_plot, title, config_name):
+    # # Change amplifier name and ohmic resistor to generic labels
+    # --- Generate new column labels ---
+    renamed_labels = [
+        (a, 'AMP_OHMIC', c) if a == 'AMP_BIAS' and c == 'IDLE' and 'ohmic' in b.lower()
+        else (a, 'PASSIVE', c)  if a == 'AMP_BIAS' and b == 'PASSIVE' and c == 'IDLE'
+        else (a, 'AMP', c)  if a == 'AMP_BIAS' and c == 'IDLE'
+        else (a, b, c)
+        for a, b, c in df_plot.columns
+    ]
+    
+    # --- Apply the renamed columns to df_plot ---
+    df_plot.columns = pd.MultiIndex.from_tuples(renamed_labels, names=df_plot.columns.names)
+    
+    # 1) Decide the plotting order of stacks (columns)
+    # Reorder columns: PASSIVE first
+    original_columns = df_plot.columns.tolist()
+    passive_cols = [col for col in df_plot.columns if col[1] == 'PASSIVE']
+    active_cols  = [col for col in df_plot.columns if col[1] != 'PASSIVE']
+    reordered_columns = passive_cols + active_cols
+    
+    # Reorder df_plot accordingly
+    df_plot = df_plot[reordered_columns]
+    cols = list(df_plot.columns)
+    
+    # Index: temperature stages (e.g., "4K", "Still", "CP", "MXC")
+    # Columns: MultiIndex with levels (Cable, Component, Operation)
+    
+    # 2) (Optional but helpful) ensure the columns are a proper 3-level MultiIndex
+    # If they already are, this does nothing.
+    if not isinstance(df_plot.columns, pd.MultiIndex) or df_plot.columns.nlevels != 3:
+        raise ValueError("dataframe columns must be a 3-level MultiIndex: (Cable, Component, Operation)")
+    
+    
+    # 3) Style map: a dict keyed by (Cable, Component, Operation) -> {'color': ..., 'hatch': ...}
+    style_map = {
+        # --- DRIVE cable ---
+        ('DRIVE', 'PASSIVE', 'IDLE'): {'color': '#1f77b4', 'hatch': ''},     # Tab20 dark blue (#1f77b4)
+        ('DRIVE', 'ATT', '1Q'):        {'color': '#9ecae1', 'hatch': '++++'},   # Tab20 light blue (#9ecae1)
+        ('DRIVE', 'ATT', '2Q'):        {'color': '#9ecae1', 'hatch': '////'},   # same light blue, (#9ecae1)
+    
+        # --- PUMP cable ---
+        ('PUMP', 'PASSIVE', 'IDLE'):   {'color': '#ff7f0e', 'hatch': ''},    # Tab20 light orange (#ff7f0e)
+        ('PUMP', 'ATT', 'READOUT'):    {'color': '#ffbb78', 'hatch': '|||'},   # Tab20 dark orange (#ffbb78)
+    
+        # --- READOUT_PIN cable ---
+        ('READOUT_PIN', 'PASSIVE', 'IDLE'):  {'color': '#2ca02c', 'hatch': ''},  # Tab20 dark green (#2ca02c)
+        ('READOUT_PIN', 'ATT', 'READOUT'):   {'color': '#98df8a', 'hatch': '|||'}, # Tab20 light green (#98df8a)
+    
+        # --- READOUT_POUT cable ---
+        ('READOUT_POUT', 'PASSIVE', 'IDLE'): {'color': '#d62728', 'hatch': ''},  # Tab20 dark red (#d62728)
+    
+        # --- AMP_BIAS cable ---
+        ('AMP_BIAS', 'PASSIVE', 'IDLE'):     {'color': '#9467bd', 'hatch': ''},  # Tab20 dark purple (#9467bd)
+        ('AMP_BIAS', 'AMP', 'IDLE'):     {'color': '#c5b0d5', 'hatch': 'xxx'},  # Tab20 light purple (#c5b0d5)
+        ('AMP_BIAS', 'AMP_OHMIC', 'IDLE'):    {'color': '#c5b0d5', 'hatch': '...'},  # same dark purple
+    }
+    
+    # 4) Define fallbacks (only used if a stack tuple isn’t in style_map)
+    # fallback_colors = plt.cm.tab20.colors  # a nice, long qualitative palette
+    # fallback_hatches = ['/', '\\', 'x', '-', '+', 'o', 'O', '.', '*']  # repeats cyclically
+    fallback_color = 'white' 
+    fallback_hatch = '//'   
+    
+    # 5) X positions and labels (temperature stages)
+    x = np.arange(len(df_plot.index))
+    xticklabels = df_plot.index.astype(str)
+    
+    # 6) Create the figure/axes
+    fig, ax = plt.subplots(figsize=(7, 5))
+    
+    # 7) Build the stacked bars
+    bottom = np.zeros(len(x), dtype=float)
+    
+    for i, col in enumerate(cols):
+        values = df_plot[col].astype(float).values
+    
+        # pull style from style_map if present, else fallback
+        style = style_map.get(col, {})
+        color = style.get('color', fallback_color)
+        hatch = style.get('hatch', fallback_hatch)
+    
+        # readable label in legend
+        label = f"{col[0]} | {col[1]} | {col[2]}"
+    
+        bars = ax.bar(
+            x,
+            values,
+            bottom=bottom,
+            label=label,
+            color=color,
+            edgecolor='black',
+            linewidth=0.6
+        )
+        # apply hatch to each rectangle
+        for b in bars:
+            b.set_hatch(hatch)
+    
+        bottom += values  # update stack baseline
+    
+    # Draw horizantal line at y=1
+    ax.axhline(y=1, color='k', linestyle='--')
+    
+    # 8) Axis cosmetics
+    # Set titles
+    ax.set_title(title)
+    ax.set_xlabel("Temperature Stage", fontsize = 'large',weight = 'bold')
+    ax.set_ylabel("Normalized Heat Load", fontsize = 'large',weight = 'bold')
+    ax.set_xticks(x)
+    ax.set_xticklabels(xticklabels)
+    
+    # 9) Legend: shrink and place outside if many stacks
+    ax.legend(ncol=1, 
+              bbox_to_anchor=(1.0, 1.0), 
+              loc='upper right',
+              fontsize='small',
+              frameon=False,
+              borderaxespad=0.)
+    
+    ax.margins(x=0.02)
+    plt.savefig(f"./{config_name}_THL.png",dpi=300)
+    plt.tight_layout()
+    plt.show()
+    df_plot.to_pickle(config_name+".pkl")  # save dataframe
+    
+
 def df_float_formatter(x):
     if x in (0, 0.0, None) or pd.isna(x):
         return " "
@@ -121,9 +247,21 @@ def categorical_cmap(nc, nsc, cmap="tab10", continuous=False):
         arhsv[:,1] = np.linspace(chsv[1],0.25,nsc)
         arhsv[:,2] = np.linspace(chsv[2],1,nsc)
         rgb = matplotlib.colors.hsv_to_rgb(arhsv)
-        cols[i*nsc:(i+1)*nsc,:] = rgb       
-    cmap = matplotlib.colors.ListedColormap(cols)
+        cols[i*nsc:(i+1)*nsc,:] = rgb
+    # Convert to hex strings
+    hex_colors = [matplotlib.colors.to_hex(rgb) for rgb in cols]
+    cmap = matplotlib.colors.ListedColormap(hex_colors)
+    # cmap = matplotlib.colors.ListedColormap(cols)
     return cmap
+
+def get_hatch_dict():
+    hatch_dict = {
+        'ATT': '/',
+        'HEMT_8F': '\\'       
+    }
+
+    return hatch_dict
+
 
 def get_color_dict():
     labels = [
@@ -179,7 +317,8 @@ def get_color_dict():
                               cmap="tab10")
     color_dict = {}
     for i, label in enumerate(labels):
-        color_dict[label] = colors(i)
+        color_dict[label] = matplotlib.colors.to_hex(colors(i))
+        # color_dict[label] = colors(i)
 
     return color_dict
 

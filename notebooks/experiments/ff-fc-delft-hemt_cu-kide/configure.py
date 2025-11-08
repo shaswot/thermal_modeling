@@ -16,6 +16,8 @@ from library.utils import watts_to_dbm, dBm2Watts
 ########################################################
 DRIVE_CABLE_POWER_MXC_1Q = -71  #dBm
 DRIVE_CABLE_POWER_MXC_2Q = -66  #dBm
+# DRIVE_CABLE_POWER_MXC_1Q = -80  #dBm
+# DRIVE_CABLE_POWER_MXC_2Q = -80  #dBm
 READOUT_PIN_POWER_MXC    = -120 #dBm (1.00e-15 W) [2021bardinMicrowavesQuantumComputing] - Sec V (Pg. 418)
 PUMP_POWER_MXC      = -55  #dBm (3.16e-09) [2019krinnerEngineeringCryogenicSetups] - Sec 3.4
     
