@@ -6,7 +6,7 @@ import yaml
 from pathlib import Path
 from typing import Any, Dict, List, Union
 
-def plot_heat_load(df_plot, title, config_name):
+def plot_heat_load(df_plot, title, config_name, possible_physical_qubits, legend_bbox=(1.0, 1.0)):
     # # Change amplifier name and ohmic resistor to generic labels
     # --- Generate new column labels ---
     renamed_labels = [
@@ -46,7 +46,17 @@ def plot_heat_load(df_plot, title, config_name):
         ('DRIVE', 'PASSIVE', 'IDLE'): {'color': '#1f77b4', 'hatch': ''},     # Tab20 dark blue (#1f77b4)
         ('DRIVE', 'ATT', '1Q'):        {'color': '#9ecae1', 'hatch': '++++'},   # Tab20 light blue (#9ecae1)
         ('DRIVE', 'ATT', '2Q'):        {'color': '#9ecae1', 'hatch': '////'},   # same light blue, (#9ecae1)
-    
+        ('DRIVE', 'PD', '1Q'):         {'color': '#17becf', 'hatch': '++++'}, # Tab20 cyan (#17becf)
+        ('DRIVE', 'PD', '2Q'):         {'color': '#17becf', 'hatch': '////'}, # Tab20 cyan (#17becf)
+
+        # --- FLUX_BIAS cable ---
+        ('FLUX_BIAS', 'PASSIVE', 'IDLE'): {'color': '#8c564b', 'hatch': ''},     # Tab20 brown (#8c564b)
+        ('FLUX_BIAS', 'BIAS_RESISTOR_4K', 'IDLE'): {'color': '#c49c94', 'hatch': 'xxx'},   # Tab20 light brown (#c49c94)
+
+        # --- COUPLER cable ---
+        ('COUPLER', 'PASSIVE', 'IDLE'): {'color': '#bcbd22', 'hatch': ''},     # Tab20 olive (#bcbd22),
+        ('COUPLER', 'RESISTOR_2Q_4K', '2Q'): {'color': '#dbdb8d', 'hatch': 'xxx'},   # Tab20 light olive (#dbdb8d),
+        
         # --- PUMP cable ---
         ('PUMP', 'PASSIVE', 'IDLE'):   {'color': '#ff7f0e', 'hatch': ''},    # Tab20 light orange (#ff7f0e)
         ('PUMP', 'ATT', 'READOUT'):    {'color': '#ffbb78', 'hatch': '|||'},   # Tab20 dark orange (#ffbb78)
@@ -54,6 +64,7 @@ def plot_heat_load(df_plot, title, config_name):
         # --- READOUT_PIN cable ---
         ('READOUT_PIN', 'PASSIVE', 'IDLE'):  {'color': '#2ca02c', 'hatch': ''},  # Tab20 dark green (#2ca02c)
         ('READOUT_PIN', 'ATT', 'READOUT'):   {'color': '#98df8a', 'hatch': '|||'}, # Tab20 light green (#98df8a)
+        ('READOUT_PIN', 'PD', 'READOUT'): {'color': '#17becf', 'hatch': '|||'}, # Tab20 cyan (#17becf)
     
         # --- READOUT_POUT cable ---
         ('READOUT_POUT', 'PASSIVE', 'IDLE'): {'color': '#d62728', 'hatch': ''},  # Tab20 dark red (#d62728)
@@ -72,7 +83,9 @@ def plot_heat_load(df_plot, title, config_name):
     
     # 5) X positions and labels (temperature stages)
     x = np.arange(len(df_plot.index))
-    xticklabels = df_plot.index.astype(str)
+    # xticklabels = df_plot.index.astype(str)
+    xticklabels = ["4K", "Still (1K)", "CP (100 mK)", "MXC (10 mK)" ]
+
     
     # 6) Create the figure/axes
     fig, ax = plt.subplots(figsize=(7, 5))
@@ -105,6 +118,11 @@ def plot_heat_load(df_plot, title, config_name):
             b.set_hatch(hatch)
     
         bottom += values  # update stack baseline
+
+    # Display no. of supported qubits on top of the bar
+    totals = df_plot.sum(axis=1)  # Sum over column. Get bar height
+    for i, total in enumerate(totals):
+        ax.text(i, total, f'{possible_physical_qubits[i]}', ha='center', va='bottom', fontsize=10)
     
     # Draw horizantal line at y=1
     ax.axhline(y=1, color='k', linestyle='--')
@@ -116,19 +134,22 @@ def plot_heat_load(df_plot, title, config_name):
     ax.set_ylabel("Normalized Heat Load", fontsize = 'large',weight = 'bold')
     ax.set_xticks(x)
     ax.set_xticklabels(xticklabels)
+    ax.set_ylim(0, max(totals) + 1.5) # Set max y-value to be slightly higher than the tallest bar
     
     # 9) Legend: shrink and place outside if many stacks
     ax.legend(ncol=1, 
-              bbox_to_anchor=(1.0, 1.0), 
+              bbox_to_anchor=legend_bbox, 
               loc='upper right',
               fontsize='small',
               frameon=False,
               borderaxespad=0.)
     
     ax.margins(x=0.02)
-    plt.savefig(f"./{config_name}_THL.png",dpi=300)
     plt.tight_layout()
+    plt.savefig(f"./{config_name}_THL.png",dpi=300)
     plt.show()
+
+    # Return the plot dataframe
     df_plot.to_pickle(config_name+".pkl")  # save dataframe
     
 
@@ -228,99 +249,99 @@ def dBm2Watts(dBm):
         return 0
 
 
-# https://stackoverflow.com/questions/47222585/matplotlib-generic-colormap-from-tab10
-def categorical_cmap(nc, nsc, cmap="tab10", continuous=False):
-    """
-    nc: no. of categories
-    nsc: no. of subcategories
-    """
-    if nc > plt.get_cmap(cmap).N:
-        raise ValueError("Too many categories for colormap.")
-    if continuous:
-        ccolors = plt.get_cmap(cmap)(np.linspace(0,1,nc))
-    else:
-        ccolors = plt.get_cmap(cmap)(np.arange(nc, dtype=int))
-    cols = np.zeros((nc*nsc, 3))
-    for i, c in enumerate(ccolors):
-        chsv = matplotlib.colors.rgb_to_hsv(c[:3])
-        arhsv = np.tile(chsv,nsc).reshape(nsc,3)
-        arhsv[:,1] = np.linspace(chsv[1],0.25,nsc)
-        arhsv[:,2] = np.linspace(chsv[2],1,nsc)
-        rgb = matplotlib.colors.hsv_to_rgb(arhsv)
-        cols[i*nsc:(i+1)*nsc,:] = rgb
-    # Convert to hex strings
-    hex_colors = [matplotlib.colors.to_hex(rgb) for rgb in cols]
-    cmap = matplotlib.colors.ListedColormap(hex_colors)
-    # cmap = matplotlib.colors.ListedColormap(cols)
-    return cmap
+# # https://stackoverflow.com/questions/47222585/matplotlib-generic-colormap-from-tab10
+# def categorical_cmap(nc, nsc, cmap="tab10", continuous=False):
+#     """
+#     nc: no. of categories
+#     nsc: no. of subcategories
+#     """
+#     if nc > plt.get_cmap(cmap).N:
+#         raise ValueError("Too many categories for colormap.")
+#     if continuous:
+#         ccolors = plt.get_cmap(cmap)(np.linspace(0,1,nc))
+#     else:
+#         ccolors = plt.get_cmap(cmap)(np.arange(nc, dtype=int))
+#     cols = np.zeros((nc*nsc, 3))
+#     for i, c in enumerate(ccolors):
+#         chsv = matplotlib.colors.rgb_to_hsv(c[:3])
+#         arhsv = np.tile(chsv,nsc).reshape(nsc,3)
+#         arhsv[:,1] = np.linspace(chsv[1],0.25,nsc)
+#         arhsv[:,2] = np.linspace(chsv[2],1,nsc)
+#         rgb = matplotlib.colors.hsv_to_rgb(arhsv)
+#         cols[i*nsc:(i+1)*nsc,:] = rgb
+#     # Convert to hex strings
+#     hex_colors = [matplotlib.colors.to_hex(rgb) for rgb in cols]
+#     cmap = matplotlib.colors.ListedColormap(hex_colors)
+#     # cmap = matplotlib.colors.ListedColormap(cols)
+#     return cmap
 
-def get_hatch_dict():
-    hatch_dict = {
-        'ATT': '/',
-        'HEMT_8F': '\\'       
-    }
+# def get_hatch_dict():
+#     hatch_dict = {
+#         'ATT': '/',
+#         'HEMT_8F': '\\'       
+#     }
 
-    return hatch_dict
+#     return hatch_dict
 
 
-def get_color_dict():
-    labels = [
-        ('DRIVE', 'PASSIVE', 'IDLE'),
-        ('DRIVE', 'ATT', '1Q'),
-        ('DRIVE', 'ATT', '2Q'),
-        ('DRIVE', 'ATT', 'READOUT'),
+# def get_color_dict():
+#     labels = [
+#         ('DRIVE', 'PASSIVE', 'IDLE'),
+#         ('DRIVE', 'ATT', '1Q'),
+#         ('DRIVE', 'ATT', '2Q'),
+#         ('DRIVE', 'ATT', 'READOUT'),
         
-        ('FLUX_BIAS', 'PASSIVE', 'IDLE'),
-        ('FLUX_BIAS', 'BIAS_RESISTOR_4K', 'IDLE'),
+#         ('FLUX_BIAS', 'PASSIVE', 'IDLE'),
+#         ('FLUX_BIAS', 'BIAS_RESISTOR_4K', 'IDLE'),
         
-        ('COUPLER', 'PASSIVE', 'IDLE'),
-        ('COUPLER', 'RESISTOR_2Q_4K', '2Q'),
+#         ('COUPLER', 'PASSIVE', 'IDLE'),
+#         ('COUPLER', 'RESISTOR_2Q_4K', '2Q'),
         
-        ('PUMP', 'PASSIVE', 'IDLE'),
-        ('PUMP', 'ATT', 'READOUT'),
+#         ('PUMP', 'PASSIVE', 'IDLE'),
+#         ('PUMP', 'ATT', 'READOUT'),
         
-        ('READOUT_PIN', 'PASSIVE', 'IDLE'),
-        ('READOUT_PIN', 'ATT', 'READOUT'),
-        ('READOUT_PIN', 'PD', 'READOUT'), 
-        ('READOUT_PIN', 'PM_v1', 'READOUT'),
-        ('READOUT_PIN', 'PM_v2', 'READOUT'),
-        ('READOUT_PIN', 'PM_v3', 'READOUT'),
+#         ('READOUT_PIN', 'PASSIVE', 'IDLE'),
+#         ('READOUT_PIN', 'ATT', 'READOUT'),
+#         ('READOUT_PIN', 'PD', 'READOUT'), 
+#         ('READOUT_PIN', 'PM_v1', 'READOUT'),
+#         ('READOUT_PIN', 'PM_v2', 'READOUT'),
+#         ('READOUT_PIN', 'PM_v3', 'READOUT'),
         
-        ('READOUT_POUT', 'PASSIVE', 'IDLE') ,
+#         ('READOUT_POUT', 'PASSIVE', 'IDLE') ,
         
-        ('AMP_BIAS', 'PASSIVE', 'IDLE') ,
-        ('AMP_BIAS', 'AMP', 'IDLE'),
-        ('AMP_BIAS', 'AMP_OHMIC', 'IDLE'),
+#         ('AMP_BIAS', 'PASSIVE', 'IDLE') ,
+#         ('AMP_BIAS', 'AMP', 'IDLE'),
+#         ('AMP_BIAS', 'AMP_OHMIC', 'IDLE'),
 
-        ('JJ_BIAS', 'PASSIVE', 'IDLE') ,
+#         ('JJ_BIAS', 'PASSIVE', 'IDLE') ,
         
         
-        ('DRIVE', 'PD', '1Q'),
-        ('DRIVE', 'PM_v1', '1Q'),
-        ('DRIVE', 'PM_v2', '1Q'),
-        ('DRIVE', 'PM_v3', '1Q'),
+#         ('DRIVE', 'PD', '1Q'),
+#         ('DRIVE', 'PM_v1', '1Q'),
+#         ('DRIVE', 'PM_v2', '1Q'),
+#         ('DRIVE', 'PM_v3', '1Q'),
 
-        ('JJ_BIAS', 'JJ_Detector', 'IDLE'),
+#         ('JJ_BIAS', 'JJ_Detector', 'IDLE'),
         
-        ('DRIVE', 'PD', '2Q'),
-        ('DRIVE', 'PM_v1', '2Q'),
-        ('DRIVE', 'PM_v2', '2Q'),
-        ('DRIVE', 'PM_v3', '2Q'),
+#         ('DRIVE', 'PD', '2Q'),
+#         ('DRIVE', 'PM_v1', '2Q'),
+#         ('DRIVE', 'PM_v2', '2Q'),
+#         ('DRIVE', 'PM_v3', '2Q'),
         
-        ('DRIVE', 'PM_v1', 'READOUT'),
-        ('DRIVE', 'PM_v2', 'READOUT'),
-        ('DRIVE', 'PM_v3', 'READOUT'),
-        ]
+#         ('DRIVE', 'PM_v1', 'READOUT'),
+#         ('DRIVE', 'PM_v2', 'READOUT'),
+#         ('DRIVE', 'PM_v3', 'READOUT'),
+#         ]
 
-    colors = categorical_cmap(nc=7, 
-                              nsc=int(np.ceil(len(labels)/7)), 
-                              cmap="tab10")
-    color_dict = {}
-    for i, label in enumerate(labels):
-        color_dict[label] = matplotlib.colors.to_hex(colors(i))
-        # color_dict[label] = colors(i)
+#     colors = categorical_cmap(nc=7, 
+#                               nsc=int(np.ceil(len(labels)/7)), 
+#                               cmap="tab10")
+#     color_dict = {}
+#     for i, label in enumerate(labels):
+#         color_dict[label] = matplotlib.colors.to_hex(colors(i))
+#         # color_dict[label] = colors(i)
 
-    return color_dict
+#     return color_dict
 
 def get_OPERATION_COUNTS(OPERATIONS, QUBIT_TYPES, WORKLOAD):
     OPERATIONS_Spec= WORKLOAD["OPERATIONS_Spec"]
