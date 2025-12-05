@@ -126,15 +126,6 @@ PHL_SIS_21w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flan
             'MXC'  : None # (W/channel); from CP plate to MXC plate
             }
 
-# three wires (ground, bias, gate) per one amplifier
-PHL_HEMT_Bias_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
-            '4K'   : PHL_Mn_4K*3,  # (W/channel); from 50K plate to 4K plate
-            'Still': None,  # (W/channel); from 4K plate to Still plate
-            'CP'   : None,   # (W/channel); from Still plate to CP plate
-            'MXC'  : None # (W/channel); from CP plate to MXC plate
-            }
-
 PHL_SIS_5w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : None,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*5,  # (W/channel); from 50K plate to 4K plate
@@ -194,6 +185,24 @@ PHL_HEMT_Bias_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K fl
             }
 
 # three wires (ground, bias, gate) per one amplifier
+PHL_HEMT_Bias_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_Mn_4K*3,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+# 13 wires (6xground, 6xbias, 1xgate) per one amplifier
+PHL_HEMT_13w_Bias_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_Mn_4K*13,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+# three wires (ground, bias, gate) per one amplifier
 PHL_HEMT_Bias_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : None,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_YBCO_4K*3,  # (W/channel); from 50K plate to 4K plate
@@ -224,6 +233,7 @@ CABLE_PHL_DATA = {
     "HEMT_Bias_Cu": PHL_HEMT_Bias_Cu,
     "HEMT_Bias_Mn": PHL_HEMT_Bias_Mn,
     "HEMT_Bias_YBCO": PHL_HEMT_Bias_YBCO,
+    "HEMT_13w_Bias_Mn": PHL_HEMT_13w_Bias_Mn,
     
     "SIS_v1_5w_Bias_Cu": PHL_SIS_5w_Cu,
     "SIS_v1_7w_Bias_Cu": PHL_SIS_7w_Cu,

@@ -22,8 +22,8 @@ rho_Cu = 0.005142 # Ohm/m [Cu-k-rho.ipynb]
 rho_Manganin = 8.823418 # Ohm/m [Manganin-k-rho.ipynb]
 
 ## Average Resistance
-R_Cu = rho_Cu * length # Ohm
-R_Manganin = rho_Manganin * length # Ohm
+R_Cu = rho_Cu * length # 0.00236532 Ohms
+R_Manganin = rho_Manganin * length # 4.05877228 Ohms
 ########################
 
 ROW_ORDER = ["DRIVE", "FLUX_BIAS", "COUPLER", "PUMP", "READOUT_PIN", "READOUT_POUT", "AMP_BIAS", "JJ_BIAS"]

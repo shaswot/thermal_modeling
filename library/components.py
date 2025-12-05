@@ -13,6 +13,52 @@ from library.utils import watts_to_dbm, dBm2Watts
 from library.constants import R_CP, R_MXC, I_BIAS, I_2Q, R_Cu, R_Manganin
 #####################################################
 
+
+# Function to append generate ohmic resistor
+def get_amp_ohmic_resistor(CABLE_CONFIG_NAMES, COMP_CONFIG):
+    # Ohmic resistance for amplifier Biasing
+    resistance = None
+    name = None
+    if '_cu' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+        resistance = R_Cu
+        name = "ohmic_Cu"
+    if '_mn' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+        resistance = R_Manganin
+        name = "ohmic_Mn"
+    if '_ybco' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+        resistance = 0.0
+        name = "ohmic_YBCO"
+    
+    # Current in amplifier
+    current = None
+    for component in COMP_CONFIG['AMP_BIAS']['4K']:
+        if isinstance(component, AMPLIFIER):
+            current = component.I
+    
+    # Ohmic Resistor
+    if 'HEMT' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+        num_params = len(CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_')) # HEMT_13w_Bias_Mn vs # HEMT_Bias_Mn
+        if num_params == 3: # HEMT_Bias_Mn
+            ohmic_resistor = AMP_OHMIC_RESISTOR(resistance, current, name)
+        if num_params > 3:      
+            _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # HEMT_13w_Bias_Mn
+            num_split = (int(tot_no_of_wires[:-1]) - 1)/2 # [V_GS, (V_DS, GND)]
+            eqv_resistance = resistance/(2*num_split)
+            ohmic_resistor = AMP_OHMIC_RESISTOR(eqv_resistance, current, name)
+    else:
+        if 'SIS_v1' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+            _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v1_5w_Bias_Mn 
+            num_LO_pair    = (int(tot_no_of_wires[:-1]) - 3)/2 # [SIS_up, SIS_down, GND, (LO_in, LO_out)]
+        
+        if 'SIS_v2' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+            _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v2_9w_Bias_Mn 
+            num_LO_pair    = (int(tot_no_of_wires[:-1]) - 7)/2 # [SIS_up, SIS_up_V+, SIS_up_V-, SIS_down, SIS_down_V+, SIS_down_V-, GND, (LO_in, LO_out)]
+                
+        current_list   = SIS_current_split(current, num_LO_pair)
+        ohmic_resistor = SIS_OHMIC_RESISTOR(resistance, current_list, name)
+        
+    return ohmic_resistor
+
 # Amplifier Class
 #################
 class AMPLIFIER():
@@ -370,13 +416,37 @@ class JJ_Detector():
 ################################################################################
 # Component Instantiations
 def create_comp_instance(comp_type_str):
-    if comp_type_str == "HEMT_8F":
+    if comp_type_str == "HEMT_8G":
         # HEMT Amplifier Instantiation
         # https://lownoisefactory.com/product/lnf-lnc4_8f/
         HEMT_V = 0.6 # Volts
         HEMT_I = 13E-3 # Amperes
         HEMT = AMPLIFIER(HEMT_V, HEMT_I, comp_type_str)
-        return HEMT 
+        return HEMT
+    elif comp_type_str == "HEMT_8G_HP":
+        # HEMT Amplifier Instantiation
+        # https://lownoisefactory.com/product/lnf-lnc4_8g/
+        HEMT_V = 1 # Volts
+        HEMT_I = 20E-3 # Amperes
+        HEMT = AMPLIFIER(HEMT_V, HEMT_I, comp_type_str)
+        return HEMT
+    elif comp_type_str == "HEMT_8G_LP":
+        # HEMT Amplifier Instantiation
+        # https://lownoisefactory.com/product/lnf-lnc4_8g/
+        HEMT_V = 0.1 # Volts
+        HEMT_I = 3E-3 # Amperes
+        HEMT = AMPLIFIER(HEMT_V, HEMT_I, comp_type_str)
+        return HEMT
+    # elif comp_type_str == "HEMT_LP":
+    #     # HEMT Amplifier Instantiation
+    #     # 2024zengSubmWCryogenicInP
+    #     # Real values from Fig. 13
+    #     # (0.06 V * 1 mA) + (0.05 V * 0.8 mA) = 100 uW
+    #     # Equivalent values
+    #     HEMT_V = 10E-3 # Volts
+    #     HEMT_I = 10E-3 # Amperes
+    #     HEMT = AMPLIFIER(HEMT_V, HEMT_I, comp_type_str)
+    #     return HEMT 
     # elif comp_type_str == "HEMT_8C":
     #     # HEMT Amplifier Instantiation
     #     # LNF-LNC4_8C [2019krinnerEngineeringCryogenicSetups]

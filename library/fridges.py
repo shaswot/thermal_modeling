@@ -105,10 +105,19 @@ KIDE_v3= { # 2024blueforsKIDEProductOverview
     'RT'   : 100, # Watts
     '50K'  : 50, # Watts
     '4K'   : 2 * 3, # Watts # Assuming operating temperature of 4K [https://bluefors.com/products/measurement-infrastructure/high-density-wiring/]
-    'Still': 7e-3 * 3, # 
+    'Still': 90e-3, # Bluefors SC25
     'CP'   : 1E-3 * 3, # Watts
     'MXC'  : 30E-6 * 3 # Watts
 }
+
+# KIDE_v3= { # 2024blueforsKIDEProductOverview
+#     'RT'   : 100, # Watts
+#     '50K'  : 50, # Watts
+#     '4K'   : 2 * 3, # Watts # Assuming operating temperature of 4K [https://bluefors.com/products/measurement-infrastructure/high-density-wiring/]
+#     'Still': 7e-3 * 3, # based on scaling values from 2025raicuCryogenicThermalModeling - Table 1
+#     'CP'   : 1E-3 * 3, # Watts
+#     'MXC'  : 30E-6 * 3 # Watts
+# }
 
 FRIDGE_LIBRARY = {
     "XLD400"   : XLD400,
