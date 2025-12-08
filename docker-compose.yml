@@ -1,0 +1,49 @@
+services:
+  # Set service name
+  thermal-scalability:
+    # Build Context
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: thermal_scalability:20251208
+    
+    # Container Name
+    container_name: shaswot-ms6-tqe
+
+    # GPU Support
+    # For Qiskit Aer support
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    # Port Forwarding
+    # Host_Machine_Port:Container_Port
+    ports:
+      - "1158:8888"  # JupyterLab
+
+    # Volumes
+    volumes:
+      # Maps your entire current project folder on the host (.)
+      # to a folder inside the container.
+      - ./:/repos/thermal_scalability
+      
+      # Persist the stash folder mentioned in your Dockerfile
+      - ./stash_data:/stash
+
+    # Runtime Configuration
+    environment:
+      - JUPYTER_TOKEN=tqe
+      - NVIDIA_VISIBLE_DEVICES=all
+    
+    # Keep the container running (replaces -dit)
+    stdin_open: true
+    tty: true
+    # Ensures the container doesn't stop immediately if an error occurs
+    restart: unless-stopped
+    
+    # Use the implementation of shared memory (prevents PyTorch dataloader crashes)
+    shm_size: '8gb'

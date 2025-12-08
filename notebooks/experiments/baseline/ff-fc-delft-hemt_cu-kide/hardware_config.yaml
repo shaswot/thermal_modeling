@@ -219,7 +219,7 @@ COMP_CONFIG_NAMES:
   AMP_BIAS:
     RT:    null
     50K:   null
-    4K:    HEMT_8F # Ohmic resistor will be added later on
+    4K:    HEMT_8G # Ohmic resistor will be added later on
     Still: null
     CP:    null
     MXC:   null
