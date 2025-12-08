@@ -1,0 +1,168 @@
+{
+  "@jupyterlab/terminal-extension:plugin": {
+    "fontFamily": "monospace",
+    "fontSize": 13,
+    "lineHeight": 1,
+    "theme": "inherit",
+    "screenReaderMode": false,
+    "scrollback": 100000,
+    "shutdownOnClose": false,
+    "closeOnExit": true,
+    "pasteWithCtrlV": true,
+    "macOptionIsMeta": false,
+    "cursorBlink": true,
+    "showStatusBarItem": "if-any"
+  },
+  "@jupyterlab/notebook-extension:tracker": {
+    "enableKernelInitNotification": false,
+    "codeCellConfig": {
+      "autoClosingBrackets": true,
+      "codeFolding": true,
+      "highlightActiveLine": true,
+      "highlightTrailingWhitespace": true,
+      "lineNumbers": true,
+      "lineWrap": true
+    },
+    "defaultCell": "code",
+    "autoStartDefaultKernel": true,
+    "showInputPlaceholder": true,
+    "inputHistoryScope": "global",
+    "kernelShutdown": false,
+    "markdownCellConfig": {
+      "autoClosingBrackets": true,
+      "codeFolding": true,
+      "highlightActiveLine": true,
+      "highlightTrailingWhitespace": true,
+      "lineNumbers": true,
+      "matchBrackets": true
+    },
+    "autoRenderMarkdownCells": false,
+    "rawCellConfig": {
+      "autoClosingBrackets": true,
+      "codeFolding": true,
+      "highlightActiveLine": true,
+      "highlightTrailingWhitespace": true,
+      "lineNumbers": true,
+      "matchBrackets": true
+    },
+    "scrollPastEnd": true,
+    "recordTiming": false,
+    "overscanCount": 1,
+    "maxNumberOutputs": 50,
+    "scrollHeadingToTop": true,
+    "showEditorForReadOnlyMarkdown": true,
+    "kernelStatus": {
+      "showOnStatusBar": false,
+      "showProgress": true,
+      "showJumpToRecentExecutionButton": false
+    },
+    "documentWideUndoRedo": false,
+    "showHiddenCellsButton": true,
+    "renderingLayout": "default",
+    "sideBySideLeftMarginOverride": "10px",
+    "sideBySideRightMarginOverride": "10px",
+    "sideBySideOutputRatio": 1,
+    "windowingMode": "contentVisibility",
+    "accessKernelHistory": false,
+    "addExtraLineOnCellMerge": true,
+    "showMinimap": false
+  },
+  "@jupyterlab/apputils-extension:themes": {
+    "theme": "JupyterLab Dark",
+    "adaptive-theme": false,
+    "preferred-light-theme": "JupyterLab Light",
+    "preferred-dark-theme": "JupyterLab Dark",
+    "theme-scrollbars": false,
+    "overrides": {
+      "code-font-family": null,
+      "code-font-size": null,
+      "content-font-family": null,
+      "content-font-size1": null,
+      "ui-font-family": null,
+      "ui-font-size1": null
+    }
+  },
+  "@jupyterlab/apputils-extension:notification": {
+    "checkForUpdates": false,
+    "doNotDisturbMode": true,
+    "fetchNews": "false"
+  },
+  "@jupyterlab/fileeditor-extension:plugin": {
+    "editorConfig": {
+      "autoClosingBrackets": true,
+      "codeFolding": true,
+      "highlightActiveLine": true,
+      "highlightTrailingWhitespace": true,
+      "highlightWhitespace": true
+    },
+    "scrollPastEnd": true,
+    "toolbar": []
+  },
+  "@jupyterlab/console-extension:tracker": {
+    "clearCellsOnExecute": false,
+    "clearCodeContentOnExecute": true,
+    "hideCodeInput": false,
+    "interactionMode": "notebook",
+    "showAllKernelActivity": false,
+    "promptCellConfig": {
+      "autoClosingBrackets": true,
+      "codeFolding": true,
+      "highlightActiveLine": true,
+      "lineNumbers": true
+    },
+    "promptCellPosition": "bottom",
+    "showBanner": true,
+    "toolbar": [
+      {
+        "name": "run",
+        "command": "console:run-forced",
+        "rank": 0
+      },
+      {
+        "name": "restart",
+        "command": "console:restart-kernel",
+        "rank": 10
+      },
+      {
+        "name": "clear",
+        "command": "console:clear",
+        "rank": 20
+      },
+      {
+        "name": "spacer",
+        "type": "spacer",
+        "rank": 100
+      },
+      {
+        "name": "kernelName",
+        "rank": 1000
+      },
+      {
+        "name": "kernelStatus",
+        "rank": 1010
+      },
+      {
+        "name": "promptPosition",
+        "rank": 1020
+      }
+    ]
+  },
+  "@jupyterlab/codemirror-extension:plugin": {
+    "defaultConfig": {
+      "autoClosingBrackets": true,
+      "codeFolding": true,
+      "highlightActiveLine": true
+    }
+  },
+  "@jupyterlab/completer-extension:manager": {
+    "availableProviders": {
+      "CompletionProvider:context": 500,
+      "CompletionProvider:kernel": 550,
+      "DebuggerCompletionProvider": 1000
+    },
+    "providerTimeout": 1000,
+    "showDocumentationPanel": true,
+    "autoCompletion": false,
+    "suppressIfInlineCompleterActive": true
+  }
+}
