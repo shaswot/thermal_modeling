@@ -175,6 +175,14 @@ PHL_SIS_19w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flan
             'MXC'  : None # (W/channel); from CP plate to MXC plate
             }
 
+PHL_SIS_21w_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_YBCO_4K*21,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+                     }
+
 # three wires (ground, bias, gate) per one amplifier
 PHL_HEMT_Bias_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : None,  # (W/channel); from 300K flange to 50K plate
@@ -252,6 +260,7 @@ CABLE_PHL_DATA = {
     "SIS_v2_11w_Bias_Mn": PHL_SIS_11w_Mn,
     "SIS_v2_19w_Bias_Mn": PHL_SIS_19w_Mn,
     "SIS_v2_21w_Bias_Mn": PHL_SIS_21w_Mn,
+    "SIS_v2_21w_Bias_YBCO": PHL_SIS_21w_YBCO,
     "JJ_Bias_YBCO":PHL_JJ_Bias_YBCO
  }
 #####################################################

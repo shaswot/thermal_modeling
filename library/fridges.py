@@ -110,14 +110,14 @@ KIDE_v3= { # 2024blueforsKIDEProductOverview
     'MXC'  : 30E-6 * 3 # Watts
 }
 
-# KIDE_v3= { # 2024blueforsKIDEProductOverview
-#     'RT'   : 100, # Watts
-#     '50K'  : 50, # Watts
-#     '4K'   : 2 * 3, # Watts # Assuming operating temperature of 4K [https://bluefors.com/products/measurement-infrastructure/high-density-wiring/]
-#     'Still': 7e-3 * 3, # based on scaling values from 2025raicuCryogenicThermalModeling - Table 1
-#     'CP'   : 1E-3 * 3, # Watts
-#     'MXC'  : 30E-6 * 3 # Watts
-# }
+COLOSSUS= { # 2024hollisterUpdateColossusMK
+    'RT'   : 20E3, # Watts
+    '50K'  : 9E3, # Watts
+    '4K'   : 200, # Watts 
+    'Still': 100e-3, # Watts
+    'CP'   : 3E-3, # Watts
+    'MXC'  : 300E-6 # Watts
+}
 
 FRIDGE_LIBRARY = {
     "XLD400"   : XLD400,
@@ -131,5 +131,6 @@ FRIDGE_LIBRARY = {
     "ULVAC_v1": ULVAC_v1,
     "ULVAC_v2": ULVAC_v2,
     "ULVAC_v3": ULVAC_v3,
-    "ULVAC_v4":ULVAC_v4
+    "ULVAC_v4":ULVAC_v4,
+    "COLOSSUS":COLOSSUS,
 }

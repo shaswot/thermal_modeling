@@ -130,7 +130,6 @@ class AMP_OHMIC_RESISTOR():
             power = 0.5 * 2 * self.I**2 * self.R
             return power
 
-
 def SIS_current_split(SIS_I, num_LO_pair):
     # split_no: No. of wires in which LO current is split
     ## Currents
@@ -259,7 +258,7 @@ class RESISTOR_2Q():
             power =   self.R * self.I_2Q**2
             
         return power
-            
+
 # Photomixer Class (Target)
 #####################
 class PhotoMixer():
@@ -270,14 +269,14 @@ class PhotoMixer():
 
         input_power_dict: dict
             Dictionary for input (optical) power for each operation (1Q, 2Q and Readout)
-            
+
         name : stf
             Name of the PhotoMixer component
         """
         self.input_power_dict = input_power_dict
         self.reflection_coefficient = reflection_coefficient
         self.name = name
-    
+
     def power_dissipation(self, operation,  MXC_POWER):
         """
         Calculates the active heat load (P_act) in a photonic-link approach, 
@@ -314,28 +313,29 @@ class PhotoMixer():
 
 # Photodetector Class
 #####################
-"""
-# "[2021lecocqControlReadoutSuperconducting - Methods: Primer on photodetection: Photocureent]"
-A photodiode can be modeled as a high impedance current source whose current is proportional to the incident optical power, $P_o$ .
-The responsivity of the photodiode $\mathcal{R}$, measured in $A W^{-1}$, determines the amount of current produced by the photodiode when optical power is incident on it.
-Thus, the photocurrent produced by the photodiode is
+# """
+# # "[2021lecocqControlReadoutSuperconducting - Methods: Primer on photodetection: Photocureent]"
+# A photodiode can be modeled as a high impedance current source whose current is proportional to the incident optical power, $P_o$ .
+# The responsivity of the photodiode $\mathcal{R}$, measured in $A W^{-1}$, determines the amount of current produced by the photodiode when optical power is incident on it.
+# Thus, the photocurrent produced by the photodiode is
 
-$ I = \mathcal{R}  P_o$
+# $ I = \mathcal{R}  P_o$
 
-[//]: # "[2021lecocqControlReadoutSuperconducting - Methods: Active heat load]"
-When this photocurrent flows into an impedance $Z$, the microwave-frequency power is 
+# [//]: # "[2021lecocqControlReadoutSuperconducting - Methods: Active heat load]"
+# When this photocurrent flows into an impedance $Z$, the microwave-frequency power is 
 
-$P_\mu = \frac{1}{2} I^2 . Z$
+# $P_\mu = \frac{1}{2} I^2 . Z$
 
-Thus, combining the above two relations, we get
+# Thus, combining the above two relations, we get
 
-$P_\mu = \frac{1}{2}( \mathcal{R}  P_o)^2 Z$
+# $P_\mu = \frac{1}{2}( \mathcal{R}  P_o)^2 Z$
 
-Rearranging, we get
-$P_o = \sqrt{\frac{2 P_\mu}{ZR^2}}$
+# Rearranging, we get
+# $P_o = \sqrt{\frac{2 P_\mu}{ZR^2}}$
 
-In the photonic link approach, the optical power is fully dissipated as heat. Thus, if the qubit requires a microwave signal with power $P_\mu$, then the required incident optical power is $P_o$ (given by the above expression) which is dissipated as heat (i.e., the active load of the photodetector).
-"""
+# In the photonic link approach, the optical power is fully dissipated as heat. Thus, if the qubit requires a microwave signal with power $P_\mu$, then the required incident optical power is $P_o$ (given by the above expression) which is dissipated as heat (i.e., the active load of the photodetector).
+# """
+
 class PhotoDetector():
     def __init__(self, Z, R, name):
         """
