@@ -24,6 +24,9 @@ RUN apt-get -yqq install \
     	software-properties-common \
     	xpra \
     	xserver-xorg-dev \
+	texlive-latex-recommended \
+	texlive-latex-extra \
+	texlive-pictures poppler-utils\
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 

@@ -1,2 +1,7 @@
 qiskit[visualization]
 scikit-learn
+stim
+sinter
+pymatching
+# numpy 2.0 has breaking changes for stim/sinter
+numpy<2.0
