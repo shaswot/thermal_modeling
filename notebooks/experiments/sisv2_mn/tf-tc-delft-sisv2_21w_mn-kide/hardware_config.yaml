@@ -37,10 +37,10 @@ CABLE_TYPES:
   - AMP_BIAS  # Amplifier Biasing Line
 
 DC_PARAMS:
-    R_4K: 0.14
+    R_4K: 1249.875
     R_CP: 0.0 # Assuming superconducting NbTi lines below 4K for FLUX_BIAS
     R_MXC: 0.0 # Assuming superconducting NbTi lines below 4K for FLUX_BIAS
-    I_BIAS: 1.0E-3
+    I_BIAS: 0.4E-3
     I_2Q: 0.4E-3
 
 

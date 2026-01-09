@@ -18,13 +18,13 @@ length = 460E-3 # 460 mm # https://lownoisefactory.com/product/lnf-nano9m/
 area = 0.0509E-6 # 30 AWG = 0.0509 mm2 # https://lownoisefactory.com/product/lnf-nano9m/
 
 ## Average Resistivity for 30 AWG wire between 4K and 50K
-rho_Cu = 0.005142 # Ohm/m [Cu-k-rho.ipynb]
-rho_Manganin = 8.823418 # Ohm/m [Manganin-k-rho.ipynb]
+rho_Manganin = 4.491120e-07 # Ohm-m
+rho_Cu = 1.8266e-10 #Ohm-m
 
 ## Average Resistance
-R_Cu = rho_Cu * length # 0.00236532 Ohms
-R_Manganin = rho_Manganin * length # 4.05877228 Ohms
+R_Cu = rho_Cu * area * length # 1.651e-03 ohms
+R_Manganin = rho_Manganin * area * length # 4.059 Ohms
 ########################
 
-ROW_ORDER = ["DRIVE", "FLUX_BIAS", "COUPLER", "PUMP", "READOUT_PIN", "READOUT_POUT", "AMP_BIAS", "JJ_BIAS"]
+ROW_ORDER = ["DRIVE", "FLUX_BIAS", "COUPLER", "PUMP", "READOUT_PIN", "READOUT_POUT", "AMP_BIAS", "DC_TERMINAL", "JJ_BIAS"]
 ORDER_DICT = {row: index for index, row in enumerate(ROW_ORDER)}

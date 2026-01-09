@@ -34,8 +34,9 @@ def get_NO_OF_CABLES(QUBIT_TYPES, QUBIT_FREQ, QUBIT_COUPLING, READOUT_GROUP_SIZE
         "DRIVE"       : NUM_QUBITS,
         "PUMP"        : NUM_QUBITS/READOUT_GROUP_SIZE,
         "READOUT_PIN" : NUM_QUBITS/READOUT_GROUP_SIZE,
-        "READOUT_POUT": NUM_QUBITS/READOUT_GROUP_SIZE, 
-        "AMP_BIAS"    : NUM_QUBITS/READOUT_GROUP_SIZE, 
+        "READOUT_POUT": NUM_QUBITS/READOUT_GROUP_SIZE,
+        "AMP_BIAS"    : NUM_QUBITS/READOUT_GROUP_SIZE,
+        "DC_TERMINAL" : NUM_QUBITS/READOUT_GROUP_SIZE, 
     }
     if QUBIT_FREQ == "TUNABLE":
         NO_OF_CABLES["FLUX_BIAS"] = NUM_QUBITS
@@ -66,6 +67,11 @@ def get_MXC_POWER(R_MXC, I_2Q, QUBIT_FREQ, QUBIT_COUPLING):
                         "IDLE" : None,
                         },
         "AMP_BIAS": {"1Q": None, 
+                      "2Q": None,
+                      "READOUT" : None,
+                      "IDLE" : None,
+                       },
+        "DC_TERMINAL": {"1Q": None, 
                       "2Q": None,
                       "READOUT" : None,
                       "IDLE" : None,

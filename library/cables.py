@@ -2,12 +2,12 @@
 # actual heatload depends on the plate temperatures. Needs a function!
 
 # PHL_Cu Notebook
-PHL_Cu_4K = 5.76458e-03 #[Cu-k-rho.ipynb]
+PHL_Cu_4K = 5.76458e-03 #[copper.ipynb]
 
 # PHL_Mn Notebook
 PHL_Mn_4K = 2.24538e-05 #[Manganin-k-rho.ipynb]
 
-PHL_YBCO_4K = 5.09000e-06 #[YBCO-k.ipynb]
+PHL_YBCO_4K = 2.63478e-06 #[YBCO-k.ipynb]
 
 ####### 2025raicuCryogenicThermalModeling - Table V (Measured HL) ##########
 PHL_HDW   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange

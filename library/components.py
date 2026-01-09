@@ -133,10 +133,10 @@ class AMP_OHMIC_RESISTOR():
 def SIS_current_split(SIS_I, num_LO_pair):
     # split_no: No. of wires in which LO current is split
     ## Currents
-    SIS_up       = 5E-6  # A [from SIS_amp_ver1_design_for_Shaswot]
+    SIS_up       = 25E-6  # 2023kojimaCharacterizationLownoiseSuperconductor
     SIS_up_vs1   = 0 
     SIS_up_vs2   = 0
-    SIS_down     = 42E-6 # A [from SIS_amp_ver1_design_for_Shaswot]
+    SIS_down     = 110E-6 # 2023kojimaCharacterizationLownoiseSuperconductor
     SIS_down_vs1 = 0
     SIS_down_vs2 = 0
     SIS_GND      = SIS_up + SIS_down
@@ -226,7 +226,7 @@ class BIAS_RESISTOR():
             error_message += f"R = {self.R},  I_BIAS = {self.I_BIAS}"
             raise ValueError(error_message)
         else:
-            power =  1/2 * self.R * self.I_BIAS**2
+            power = self.R * self.I_BIAS**2
 
         return power
 

@@ -1,60 +1,83 @@
-############### ESM_CZ_a ############################################
-ESM_CZ_a = {
-    "NAME": "ESM_CZ_a",
-    "LATENCY_Spec": { 
+############### ESM_CX_a ############################################
+ESM_CX_a = {
+    "NAME": "ESM_CX_a",
+    "LATENCY": { 
         "1Q": 42.67, # ns [2024underwoodUsingCryogenicCMOSa - Fig 2. caption]
         "2Q": 71.1, # ns [2024underwoodUsingCryogenicCMOSa - Fig 2. caption]
         "READOUT": 100, #ns [2025springFastMultiplexedSuperconductingQubit]
-        "IDLE": 0, # nreq
+        "IDLE": 0, # Key is necessary but value has no meaning
         "TOTAL": 1100 #ns [2025acharyaQuantumErrorCorrection]
     },
-    "OPERATIONS_Spec": { # Using values from Ilkwon's spreadsheet
-        "ANCILLA":{
-            "1Q": 8,
-            "2Q": 8,
-            "READOUT": 4,
-            "IDLE":0,
-        },
-        "DATA":{
-            "1Q": 12,
-            "2Q": 8,
-            "READOUT": 0,
-            "IDLE":0,
-        },
+    "OPERATION_COUNT": {
+        "1Q": 4,
+        "2Q": 16,
+        "READOUT": 4,
+        "IDLE": 0 # Key is necessary but value has no meaning
     },
     "DATA": 4,
     "ANCILLA":4,
 }
 #####################################################################
 
-############### ESM_CX_a ############################################
-ESM_CX_a = {
-    "NAME": "ESM_CX_a",
-    "LATENCY_Spec": { 
-        "1Q": 42.67, # ns [2024underwoodUsingCryogenicCMOSa - Fig 2. caption]
-        "2Q": 71.1, # ns [2024underwoodUsingCryogenicCMOSa - Fig 2. caption]
-        "READOUT": 100, #ns [2025springFastMultiplexedSuperconductingQubit]
-        "IDLE": 0, # nreq
-        "TOTAL": 1100 #ns [2025acharyaQuantumErrorCorrection]
-    },
-    "OPERATIONS_Spec": { # Using values from Ilkwon's spreadsheet
-        "ANCILLA":{
-            "1Q": 4,
-            "2Q": 8,
-            "READOUT": 4,
-            "IDLE":0,
-        },
-        "DATA":{
-            "1Q": 0,
-            "2Q": 8,
-            "READOUT": 0,
-            "IDLE":0,
-        },
-    },
-    "DATA": 4,
-    "ANCILLA":4,
-}
-#####################################################################
+
+
+# ############### ESM_CZ_a ############################################
+# ESM_CZ_a = {
+#     "NAME": "ESM_CZ_a",
+#     "LATENCY_Spec": { 
+#         "1Q": 25, # ns [2025acharyaQuantumErrorCorrection - 105 qubit]
+#         "2Q": 42, # ns [2025acharyaQuantumErrorCorrection - 105 qubit]
+#         "READOUT": 400, #ns [2025acharyaQuantumErrorCorrection - 105 qubit]
+#         "IDLE": 0, # nreq
+#         "TOTAL": 1100 #ns [2025acharyaQuantumErrorCorrection]
+#     },
+#     "OPERATIONS_Spec": { 
+#         "ANCILLA":{
+#             "1Q": 8,
+#             "2Q": 8,
+#             "READOUT": 4,
+#             "IDLE":0,
+#         },
+#         "DATA":{
+#             "1Q": 12,
+#             "2Q": 8,
+#             "READOUT": 0,
+#             "IDLE":0,
+#         },
+#     },
+#     "DATA": 4,
+#     "ANCILLA":4,
+# }
+# #####################################################################
+
+# ############### ESM_CX_a ############################################
+# ESM_CX_a = {
+#     "NAME": "ESM_CX_a",
+#     "LATENCY_Spec": { 
+#         "1Q": 42.67, # ns [2024underwoodUsingCryogenicCMOSa - Fig 2. caption]
+#         "2Q": 71.1, # ns [2024underwoodUsingCryogenicCMOSa - Fig 2. caption]
+#         "READOUT": 100, #ns [2025springFastMultiplexedSuperconductingQubit]
+#         "IDLE": 0, # nreq
+#         "TOTAL": 1100 #ns [2025acharyaQuantumErrorCorrection]
+#     },
+#     "OPERATIONS_Spec": { # Using values from Ilkwon's spreadsheet
+#         "ANCILLA":{
+#             "1Q": 4,
+#             "2Q": 8,
+#             "READOUT": 4,
+#             "IDLE":0,
+#         },
+#         "DATA":{
+#             "1Q": 0,
+#             "2Q": 8,
+#             "READOUT": 0,
+#             "IDLE":0,
+#         },
+#     },
+#     "DATA": 4,
+#     "ANCILLA":4,
+# }
+# #####################################################################
 
 
 

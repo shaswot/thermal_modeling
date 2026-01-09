@@ -35,6 +35,7 @@ CABLE_TYPES:
   - READOUT_PIN
   - READOUT_POUT
   - AMP_BIAS  # Amplifier Biasing Line
+  - DC_TERMINAL # Directional Coupler termination relocated to 4K
 
 # DC_PARAMS:
 #     R_4K: 0.14
@@ -94,6 +95,13 @@ CABLE_CONFIG_NAMES:
     Still: null
     CP:    null
     MXC:   null
+  DC_TERMINAL:  # Directional Coupler termination relocated to 4K
+    RT:    null
+    50K:   null
+    4K:    null 
+    Still: NbTi
+    CP:    NbTi
+    MXC:   NbTi
 
 ###################
 # Activation Matrix
@@ -114,6 +122,8 @@ ACTIVATION_MATRIX:
     READOUT_POUT:
         - READOUT
     AMP_BIAS: # always ON
+        - IDLE
+    DC_TERMINAL: # always ON
         - IDLE
 
 ##########################
@@ -163,6 +173,13 @@ ATT_CONFIG: # arbitrary adding to 60 dB
     CP:    0
     MXC:   0
   AMP_BIAS: 
+    RT:    0
+    50K:   0
+    4K:    0
+    Still: 0
+    CP:    0
+    MXC:   0
+  DC_TERMINAL: 
     RT:    0
     50K:   0
     4K:    0
@@ -220,6 +237,13 @@ COMP_CONFIG_NAMES:
     RT:    null
     50K:   null
     4K:    HEMT_8G # Ohmic resistor will be added later on
+    Still: null
+    CP:    null
+    MXC:   null
+  DC_TERMINAL:
+    RT:    null
+    50K:   null
+    4K:    null
     Still: null
     CP:    null
     MXC:   null
