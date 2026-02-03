@@ -28,10 +28,16 @@ style_map = {
     # --- FLUX_BIAS cable ---
     ('FLUX_BIAS', 'PASSIVE', 'IDLE'): {'color': '#8c564b', 'hatch': ''},     # Tab20 brown (#8c564b)
     ('FLUX_BIAS', 'BIAS_RESISTOR_4K', 'IDLE'): {'color': '#c49c94', 'hatch': 'xxx'},   # Tab20 light brown (#c49c94)
+    ('FLUX_BIAS', 'BIAS_RESISTOR_Still', 'IDLE'): {'color': '#9e6440', 'hatch': 'xxx'},  
+    ('FLUX_BIAS', 'BIAS_RESISTOR_CP', 'IDLE'): {'color': '#f69b63', 'hatch': 'xxx'},   
+    ('FLUX_BIAS', 'BIAS_RESISTOR_MXC', 'IDLE'): {'color': '#ffc77f', 'hatch': 'xxx'},  
 
     # --- COUPLER cable ---
     ('COUPLER', 'PASSIVE', 'IDLE'): {'color': '#bcbd22', 'hatch': ''},     # Tab20 olive (#bcbd22),
-    ('COUPLER', 'RESISTOR_2Q_4K', '2Q'): {'color': '#dbdb8d', 'hatch': 'xxx'},   # Tab20 light olive (#dbdb8d),
+    ('COUPLER', 'RESISTOR_2Q_4K', '2Q'): {'color': '#dbdb8d', 'hatch': '...'},   # Tab20 light olive (#dbdb8d),
+    ('COUPLER', 'RESISTOR_2Q_Still', '2Q'): {'color': '#a2d066', 'hatch': '...'},   
+    ('COUPLER', 'RESISTOR_2Q_MXC', '2Q'): {'color': '#d1e866', 'hatch': '...'},   
+    ('COUPLER', 'RESISTOR_2Q_CP', '2Q'): {'color': '#ffff66', 'hatch': '...'},   
     
     # --- PUMP cable ---
     ('PUMP', 'PASSIVE', 'IDLE'):   {'color': '#ff7f0e', 'hatch': ''},    # Tab20 light orange (#ff7f0e)
@@ -50,18 +56,34 @@ style_map = {
     ('AMP_BIAS', 'AMP', 'IDLE'):     {'color': '#c5b0d5', 'hatch': 'xxx'},  # Tab20 light purple (#c5b0d5)
     ('AMP_BIAS', 'AMP_OHMIC', 'IDLE'):    {'color': '#c5b0d5', 'hatch': '...'},  # same dark purple
 
+    # --- AMP_BIAS_50K cable ---
+    ('AMP_BIAS_50K', 'PASSIVE', 'IDLE'):     {'color': '#b96456', 'hatch': ''},  
+    ('AMP_BIAS_50K', 'AMP', 'IDLE'):     {'color': '#ca9c80', 'hatch': 'xxx'},  
+    ('AMP_BIAS_50K', 'AMP_OHMIC', 'IDLE'):    {'color': '#ca9c80', 'hatch': '...'},  
+
     # --- DC_TERMINAL cable ---
-    ('DC_TERMINAL', 'PASSIVE', 'IDLE'):     {'color': '#bcbd22', 'hatch': ''},  # Tab20 dark olive (#bcbd22)
+    ('DC_TERMINAL', 'PASSIVE', 'IDLE'):     {'color': '#686868', 'hatch': ''},  # #686868
     
 }
 
-def plot_heat_load(df_plot, title, config_name, possible_physical_qubits, legend_bbox=(1.0, 1.0)):
+def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbox=(1.0, 1.0)):
     # # Change amplifier name and ohmic resistor to generic labels
     # --- Generate new column labels ---
     renamed_labels = [
         (a, 'AMP_OHMIC', c) if a == 'AMP_BIAS' and c == 'IDLE' and 'ohmic' in b.lower()
         else (a, 'PASSIVE', c)  if a == 'AMP_BIAS' and b == 'PASSIVE' and c == 'IDLE'
         else (a, 'AMP', c)  if a == 'AMP_BIAS' and c == 'IDLE'
+        else (a, b, c)
+        for a, b, c in df_plot.columns
+    ]
+    
+    # --- Apply the renamed columns to df_plot ---
+    df_plot.columns = pd.MultiIndex.from_tuples(renamed_labels, names=df_plot.columns.names)
+
+    renamed_labels = [
+        (a, 'AMP_OHMIC', c) if a == 'AMP_BIAS_50K' and c == 'IDLE' and 'ohmic' in b.lower()
+        else (a, 'PASSIVE', c)  if a == 'AMP_BIAS_50K' and b == 'PASSIVE' and c == 'IDLE'
+        else (a, 'AMP', c)  if a == 'AMP_BIAS_50K' and c == 'IDLE'
         else (a, b, c)
         for a, b, c in df_plot.columns
     ]
@@ -101,7 +123,7 @@ def plot_heat_load(df_plot, title, config_name, possible_physical_qubits, legend
     x = np.arange(len(df_plot.index))
     # xticklabels = df_plot.index.astype(str)
     # xticklabels = ["4K", "Still (1K)", "CP (100 mK)", "MXC (10 mK)" ]
-    xticklabels = ["4K", "Still", "CP", "MXC" ]
+    xticklabels = ["50K", "4K", "Still", "CP", "MXC" ]
     
     # 6) Create the figure/axes
     # IEEE TQE Guidelines
@@ -139,6 +161,7 @@ def plot_heat_load(df_plot, title, config_name, possible_physical_qubits, legend
         bottom += values  # update stack baseline
 
     # Display no. of supported qubits on top of the bar
+    possible_physical_qubits = list(physical_qubits_dict.values())
     totals = df_plot.sum(axis=1)  # Sum over column. Get bar height
     for i, total in enumerate(totals):
         ax.text(i, total, f'{possible_physical_qubits[i]}', ha='center', va='bottom', fontproperties=text_font)
@@ -170,10 +193,17 @@ def plot_heat_load(df_plot, title, config_name, possible_physical_qubits, legend
     plt.savefig(f"./{config_name}_THL.png",dpi=600)
     plt.show()
 
-    # Return the plot dataframe
-    df_plot.to_pickle(config_name+".pkl")  # save dataframe
+    # Save plot dataframe as pickle file
+    df_plot.to_pickle(config_name+".pkl")
 
+    # Save no. of physical qubits as pickle file
+    df_pq = pd.DataFrame([physical_qubits_dict], index=["PQ"])
+    df_pq.to_pickle("PQ_"+config_name+".pkl")
+
+    # Return the plot dataframe
     return df_plot
+
+#######################################################################
 
 def df_float_formatter(x):
     if x in (0, 0.0, None) or pd.isna(x):

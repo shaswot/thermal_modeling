@@ -2,12 +2,23 @@
 # actual heatload depends on the plate temperatures. Needs a function!
 
 # PHL_Cu Notebook
-PHL_Cu_4K = 5.76458e-03 #[copper.ipynb]
+# PHL_Cu_4K = 5.76458e-03 #[copper.ipynb]
+PHL_Cu_4K=9.14382e-03 #Watts
+PHL_Cu_50K=2.77729e-02 #Watts
+
+R_Cu_4K=1.041e-03 #ohms
+R_Cu_50K=3.345e-02 #ohms
 
 # PHL_Mn Notebook
-PHL_Mn_4K = 2.24538e-05 #[Manganin-k-rho.ipynb]
+PHL_Mn_4K=3.42354e-05 #Watts
+PHL_Mn_50K=1.12122e-03 #Watts
 
-PHL_YBCO_4K = 2.63478e-06 #[YBCO-k.ipynb]
+R_Manganin_4K=2.554 #ohms 
+R_Manganin_50K=1.896 #ohms 
+
+# PHL_YBCO_4K = 2.63478e-06 #[YBCO-k.ipynb]
+PHL_YBCO_4K=4.17931e-06
+PHL_YBCO_50K=6.06000e-06
 
 ####### 2025raicuCryogenicThermalModeling - Table V (Measured HL) ##########
 PHL_HDW   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
@@ -42,6 +53,23 @@ PHL_NbTi_coax   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
             'CP'   : 0.3E-6,   # (W/channel); from Still plate to CP plate
             'MXC'  : 20E-9 # (W/channel); from CP plate to MXC plate
             }
+
+PHL_GHOST   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : None,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+# 2022joshiScalingSuperconductingQuantum
+PHL_NbTi_coax2   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : None,  # (W/channel); from 50K plate to 4K plate
+            'Still': 0.6E-6,  # (W/channel); from 4K plate to Still plate (assuming 10x increase in PHL with 10x increase in temp - 2023smithImprovedFlexibleCoaxial )
+            'CP'   : 0.06E-6,   # (W/channel); from Still plate to CP plate
+            'MXC'  : 0.004E-6 # (W/channel); from CP plate to MXC plate
+            }
 ################################################################################
 PHL_Ag   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : 2.7E-3,  # (W/channel); from 300K flange to 50K plate
@@ -60,25 +88,25 @@ PHL_NbTi = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             }
 
 PHL_Fiber = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-             '50K'  : None,  # (W/channel); from 300K flange to 50K plate
-             '4K'   : 5.6E-6,  # (W/channel); from 50K plate to 4K plate [2021lecocqControlReadoutSuperconducting - Methods: Passive heat load]
-             'Still': 2.75E-09,  # (W/channel); from 4K plate to Still plate [assuming similar ratio with NbTi]
-             'CP'   : 1.47E-10,   # (W/channel); from Still plate to CP plate [assuming similar ratio with NbTi]
-             'MXC'  : 3.00E-12 # (W/channel); from CP plate to MXC plate [2021lecocqControlReadoutSuperconducting - Pg.577]
+             '50K'  : 5.11807e-09,  # (W/channel); from 300K flange to 50K plate
+             '4K'   : 1.75231e-10,  # (W/channel); from 50K plate to 4K plate 
+             'Still': 2.86506e-12,  # (W/channel); from 4K plate to Still plate [2021lecocqControlReadoutSuperconducting - Pg.577]
+             'CP'   : 2.33732e-13,   # (W/channel); from Still plate to CP plate 
+             'MXC'  : 2.66186e-16# (W/channel); from CP plate to MXC plate 
             }
 
-# For photomixers, there is an input optical fiber and an "output" optical fiber that dissipates excess optical energy at RT
+#              # For photomixers, there is an input optical fiber and an "output" optical fiber that dissipates excess optical energy at RT
 PHL_Fiber2 = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-             '50K'  : None,  # (W/channel); from 300K flange to 50K plate
-             '4K'   : 2 * 5.6E-6,  # (W/channel); from 50K plate to 4K plate [2021lecocqControlReadoutSuperconducting - Methods: Passive heat load]
-             'Still': 2 * 2.75E-09,  # (W/channel); from 4K plate to Still plate [assuming similar ratio with NbTi]
-             'CP'   : 2 * 1.47E-10,   # (W/channel); from Still plate to CP plate [assuming similar ratio with NbTi]
-             'MXC'  : 2 * 3.00E-12 # (W/channel); from CP plate to MXC plate [2021lecocqControlReadoutSuperconducting - Pg.577]
+             '50K'  : 2 * 5.11807e-09,  # (W/channel); from 300K flange to 50K plate
+             '4K'   : 2 * 1.75231e-10,  # (W/channel); from 50K plate to 4K plate [2021lecocqControlReadoutSuperconducting - Methods: Passive heat load]
+             'Still': 2 * 2.86506e-12,  # (W/channel); from 4K plate to Still plate [assuming similar ratio with NbTi]
+             'CP'   : 2 * 2.33732e-13,   # (W/channel); from Still plate to CP plate [assuming similar ratio with NbTi]
+             'MXC'  : 2 * 2.66186e-16 # (W/channel); from CP plate to MXC plate [2021lecocqControlReadoutSuperconducting - Pg.577]
             }
 ################################################################################
 # At least, three and two wires are needed for two SIS mixers and one Josephson oscillator, respectively (five wires in total)
 PHL_SIS_5w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Mn_50K*5,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*5,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -86,7 +114,7 @@ PHL_SIS_5w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
             }
 
 PHL_SIS_7w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Mn_50K*7,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*7,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -95,7 +123,7 @@ PHL_SIS_7w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
 
 # if acceptable, we would like to add four more wires (nine wires in total) for accurate biasing
 PHL_SIS_9w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Mn_50K*9,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*9,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -103,7 +131,7 @@ PHL_SIS_9w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
             }
 
 PHL_SIS_11w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Mn_50K*11,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*11,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -111,7 +139,7 @@ PHL_SIS_11w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flan
             }
 
 PHL_SIS_19w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Mn_50K*19,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*19,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -119,7 +147,7 @@ PHL_SIS_19w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flan
             }
 
 PHL_SIS_21w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Mn_50K*21,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*21,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -127,7 +155,7 @@ PHL_SIS_21w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flan
             }
 
 PHL_SIS_5w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Cu_50K*5,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*5,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -135,7 +163,7 @@ PHL_SIS_5w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
             }
 
 PHL_SIS_7w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Cu_50K*7,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*7,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -144,7 +172,7 @@ PHL_SIS_7w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
 
 # if acceptable, we would like to add four more wires (nine wires in total) for accurate biasing
 PHL_SIS_9w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Cu_50K*9,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*9,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -152,7 +180,7 @@ PHL_SIS_9w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
             }
 
 PHL_SIS_9w_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_YBCO_50K*9,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_YBCO_4K*9,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -160,7 +188,7 @@ PHL_SIS_9w_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K fla
             }
 
 PHL_SIS_11w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Cu_50K*11,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*11,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -168,7 +196,7 @@ PHL_SIS_11w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flan
             }
 
 PHL_SIS_19w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Cu_50K*19,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*19,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -176,7 +204,7 @@ PHL_SIS_19w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flan
             }
 
 PHL_SIS_21w_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_YBCO_50K*21,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_YBCO_4K*21,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -185,8 +213,17 @@ PHL_SIS_21w_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K fl
 
 # three wires (ground, bias, gate) per one amplifier
 PHL_HEMT_Bias_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Cu_50K*3,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*3,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+#2024zengSubmWCryogenicInP (dual bias)
+PHL_ULP_HEMT_Bias_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : PHL_Cu_50K*6,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_Cu_4K*6,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
             'MXC'  : None # (W/channel); from CP plate to MXC plate
@@ -194,8 +231,17 @@ PHL_HEMT_Bias_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K fl
 
 # three wires (ground, bias, gate) per one amplifier
 PHL_HEMT_Bias_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Mn_50K*3,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*3,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+#2024zengSubmWCryogenicInP (dual bias)
+PHL_ULP_HEMT_Bias_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : PHL_Mn_50K*6,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_Mn_4K*6,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
             'MXC'  : None # (W/channel); from CP plate to MXC plate
@@ -203,7 +249,7 @@ PHL_HEMT_Bias_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K fl
 
 # 13 wires (6xground, 6xbias, 1xgate) per one amplifier
 PHL_HEMT_13w_Bias_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_Mn_50K*13,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*13,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
@@ -212,8 +258,17 @@ PHL_HEMT_13w_Bias_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300
 
 # three wires (ground, bias, gate) per one amplifier
 PHL_HEMT_Bias_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_YBCO_50K*3,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_YBCO_4K*3,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+# #2024zengSubmWCryogenicInP (dual bias)
+PHL_ULP_HEMT_Bias_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : PHL_YBCO_50K*6,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_YBCO_4K*6,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
             'MXC'  : None # (W/channel); from CP plate to MXC plate
@@ -222,7 +277,7 @@ PHL_HEMT_Bias_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K 
 ################################################################################
 # Josephson Detector in Photomixer
 PHL_JJ_Bias_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : None,  # (W/channel); from 300K flange to 50K plate
+            '50K'  : PHL_YBCO_50K*6,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_YBCO_4K*6,  # V+, V-, GND, I_in
             'Still': PHL_NbTi['Still']*6,  # V+, V-, GND, I_in
             'CP'   : PHL_NbTi['CP']*6,  # V+, V-, GND, I_in
@@ -237,10 +292,15 @@ CABLE_PHL_DATA = {
     "SS_Drive": PHL_SS_Drive,
     "SS_Flux": PHL_SS_Flux,
     "NbTi_coax": PHL_NbTi_coax,
+    "NbTi_coax2": PHL_NbTi_coax2,
+    "GHOST": PHL_GHOST,
     "HDW": PHL_HDW,
     "HEMT_Bias_Cu": PHL_HEMT_Bias_Cu,
     "HEMT_Bias_Mn": PHL_HEMT_Bias_Mn,
     "HEMT_Bias_YBCO": PHL_HEMT_Bias_YBCO,
+    "ULP_HEMT_Bias_Cu": PHL_ULP_HEMT_Bias_Cu,
+    "ULP_HEMT_Bias_Mn": PHL_ULP_HEMT_Bias_Mn,
+    "ULP_HEMT_Bias_YBCO": PHL_ULP_HEMT_Bias_YBCO,
     "HEMT_13w_Bias_Mn": PHL_HEMT_13w_Bias_Mn,
     
     "SIS_v1_5w_Bias_Cu": PHL_SIS_5w_Cu,

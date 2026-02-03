@@ -9,55 +9,210 @@ if PROJ_ROOT not in sys.path:
     sys.path.append(PROJ_ROOT)
 #####################################################
 import numpy as np
+from library.cables import R_Cu_4K, R_Cu_50K, R_Manganin_4K, R_Manganin_50K
 from library.utils import watts_to_dbm, dBm2Watts
-from library.constants import R_CP, R_MXC, I_BIAS, I_2Q, R_Cu, R_Manganin
 #####################################################
+# Add DC resistance for flux-bias and coupler-bias lines
+def add_flux_coupler_DC_resistance(COMP_CONFIG,
+                                   QUBIT_FREQ, 
+                                   QUBIT_COUPLING, 
+                                   R_4K, R_Still, R_CP, R_MXC):
+    if QUBIT_FREQ == "TUNABLE":
+        [comp.set_values(R_4K, I_BIAS) for comp in COMP_CONFIG["FLUX_BIAS"]["4K"]]
+        [comp.set_values(R_Still, I_BIAS) for comp in COMP_CONFIG["FLUX_BIAS"]["Still"]]
+        [comp.set_values(R_CP, I_BIAS) for comp in COMP_CONFIG["FLUX_BIAS"]["CP"]]
+        [comp.set_values(R_MXC, I_BIAS) for comp in COMP_CONFIG["FLUX_BIAS"]["MXC"]]
+    if QUBIT_COUPLING == "TUNABLE":
+        [comp.set_values(R_4K, I_2Q) for comp in COMP_CONFIG["COUPLER"]["4K"]]
+        [comp.set_values(R_Still, I_2Q) for comp in COMP_CONFIG["COUPLER"]["Still"]]
+        [comp.set_values(R_CP, I_2Q) for comp in COMP_CONFIG["COUPLER"]["CP"]]
+        [comp.set_values(R_MXC,I_2Q) for comp in COMP_CONFIG["COUPLER"]["MXC"]]
 
+    return COMP_CONFIG
+#######################################################################
+def add_ohmic_resistors_amp_at_4K(CABLE_CONFIG_NAMES, COMP_CONFIG):
+    # Determine current in amplifier
+    current = None
+    if CABLE_CONFIG_NAMES['AMP_BIAS']['4K'] is not None:
+        for component in COMP_CONFIG['AMP_BIAS']['4K']:
+            if isinstance(component, AMPLIFIER):
+                current = component.I
 
-# Function to append generate ohmic resistor
-def get_amp_ohmic_resistor(CABLE_CONFIG_NAMES, COMP_CONFIG):
+    # 4K stage
+    # Determine Ohmic resistance for amplifier Biasing
+    resistance = None
+    name = None
+    if CABLE_CONFIG_NAMES['AMP_BIAS']['4K'] is not None:
+        if '_cu' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+            resistance = R_Cu_4K
+            name = "ohmic_Cu"
+        if '_mn' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+            resistance = R_Manganin_4K
+            name = "ohmic_Mn"
+        if '_ybco' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+            resistance = 0.0
+            name = "ohmic_YBCO"
+    else:
+        resistance = 0.0
+        name = "ohmic_zero"
+
+    # Create Ohmic Resistor
+    if CABLE_CONFIG_NAMES['AMP_BIAS']['4K'] is not None:
+        if 'HEMT' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+            ohmic_resistor = AMP_OHMIC_RESISTOR(resistance, current, name)
+            if COMP_CONFIG['AMP_BIAS']['4K']is not None:
+                COMP_CONFIG['AMP_BIAS']['4K'].append(ohmic_resistor)
+            else:
+                COMP_CONFIG['AMP_BIAS']['4K'] = [ohmic_resistor]
+        
+        elif 'SIS_v1' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+            _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v1_5w_Bias_Mn 
+            num_LO_pair    = (int(tot_no_of_wires[:-1]) - 3)/2 # [SIS_up, SIS_down, GND, (LO_in, LO_out)]
+            current_list   = SIS_current_split(current, num_LO_pair)
+            ohmic_resistor = SIS_OHMIC_RESISTOR(resistance, current_list, name)
+            if COMP_CONFIG['AMP_BIAS']['4K']is not None:
+                COMP_CONFIG['AMP_BIAS']['4K'].append(ohmic_resistor)
+            else:
+                COMP_CONFIG['AMP_BIAS']['4K'] = [ohmic_resistor]
+            
+        elif 'SIS_v2' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+            _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v2_9w_Bias_Mn 
+            num_LO_pair    = (int(tot_no_of_wires[:-1]) - 7)/2 # [SIS_up, SIS_up_V+, SIS_up_V-, SIS_down, SIS_down_V+, SIS_down_V-, GND, (LO_in, LO_out)]
+            current_list   = SIS_current_split(current, num_LO_pair)
+            ohmic_resistor = SIS_OHMIC_RESISTOR(resistance, current_list, name)
+            if COMP_CONFIG['AMP_BIAS']['4K']is not None:
+                COMP_CONFIG['AMP_BIAS']['4K'].append(ohmic_resistor)
+            else:
+                COMP_CONFIG['AMP_BIAS']['4K'] = [ohmic_resistor]
+
+    # 50K stage
     # Ohmic resistance for amplifier Biasing
     resistance = None
     name = None
-    if '_cu' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
-        resistance = R_Cu
-        name = "ohmic_Cu"
-    if '_mn' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
-        resistance = R_Manganin
-        name = "ohmic_Mn"
-    if '_ybco' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
-        resistance = 0.0
-        name = "ohmic_YBCO"
-    
-    # Current in amplifier
-    current = None
-    for component in COMP_CONFIG['AMP_BIAS']['4K']:
-        if isinstance(component, AMPLIFIER):
-            current = component.I
-    
-    # Ohmic Resistor
-    if 'HEMT' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
-        num_params = len(CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_')) # HEMT_13w_Bias_Mn vs # HEMT_Bias_Mn
-        if num_params == 3: # HEMT_Bias_Mn
-            ohmic_resistor = AMP_OHMIC_RESISTOR(resistance, current, name)
-        if num_params > 3:      
-            _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # HEMT_13w_Bias_Mn
-            num_split = (int(tot_no_of_wires[:-1]) - 1)/2 # [V_GS, (V_DS, GND)]
-            eqv_resistance = resistance/(2*num_split)
-            ohmic_resistor = AMP_OHMIC_RESISTOR(eqv_resistance, current, name)
+    if CABLE_CONFIG_NAMES['AMP_BIAS']['50K'] is not None:
+        if '_cu' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K'].lower():
+            resistance = R_Cu_50K
+            name = "ohmic_Cu"
+        if '_mn' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K'].lower():
+            resistance = R_Manganin_50K
+            name = "ohmic_Mn"
+        if '_ybco' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K'].lower():
+            resistance = 0.0
+            name = "ohmic_YBCO"
     else:
-        if 'SIS_v1' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
-            _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v1_5w_Bias_Mn 
+        resistance = 0.0
+        name = "ohmic_zero"
+    # 
+    # Ohmic Resistor
+    if CABLE_CONFIG_NAMES['AMP_BIAS']['50K'] is not None:
+        if 'HEMT' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K']:
+            ohmic_resistor = AMP_OHMIC_RESISTOR(resistance, current, name)
+            if COMP_CONFIG['AMP_BIAS']['50K']is not None:
+                COMP_CONFIG['AMP_BIAS']['50K'].append(ohmic_resistor)
+            else:
+                COMP_CONFIG['AMP_BIAS']['50K'] = [ohmic_resistor]
+        
+        elif 'SIS_v1' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K']:
+            _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['50K'].split('_') # SIS_v1_5w_Bias_Mn 
             num_LO_pair    = (int(tot_no_of_wires[:-1]) - 3)/2 # [SIS_up, SIS_down, GND, (LO_in, LO_out)]
-        
-        if 'SIS_v2' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
-            _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v2_9w_Bias_Mn 
+            current_list   = SIS_current_split(current, num_LO_pair)
+            ohmic_resistor = SIS_OHMIC_RESISTOR(resistance, current_list, name)
+            if COMP_CONFIG['AMP_BIAS']['50K']is not None:
+                COMP_CONFIG['AMP_BIAS']['50K'].append(ohmic_resistor)
+            else:
+                COMP_CONFIG['AMP_BIAS']['50K'] = [ohmic_resistor]
+            
+        elif 'SIS_v2' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K']:
+            _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['50K'].split('_') # SIS_v2_9w_Bias_Mn 
             num_LO_pair    = (int(tot_no_of_wires[:-1]) - 7)/2 # [SIS_up, SIS_up_V+, SIS_up_V-, SIS_down, SIS_down_V+, SIS_down_V-, GND, (LO_in, LO_out)]
-                
-        current_list   = SIS_current_split(current, num_LO_pair)
-        ohmic_resistor = SIS_OHMIC_RESISTOR(resistance, current_list, name)
+            current_list   = SIS_current_split(current, num_LO_pair)
+            ohmic_resistor = SIS_OHMIC_RESISTOR(resistance, current_list, name)
+            if COMP_CONFIG['AMP_BIAS']['50K']is not None:
+                COMP_CONFIG['AMP_BIAS']['50K'].append(ohmic_resistor)
+            else:
+                COMP_CONFIG['AMP_BIAS']['50K'] = [ohmic_resistor]
+    return COMP_CONFIG
+########################################################################
+def add_ohmic_resistors_amp_at_50K(CABLE_CONFIG_NAMES, COMP_CONFIG):
+    # Determine current in amplifier
+    current = None
+    if CABLE_CONFIG_NAMES['AMP_BIAS_50K']['50K'] is not None:
+        for component in COMP_CONFIG['AMP_BIAS_50K']['50K']:
+            if isinstance(component, AMPLIFIER):
+                current = component.I
+
+    # 50K stage
+    # Ohmic resistance for amplifier Biasing
+    resistance = None
+    name = None
+    if CABLE_CONFIG_NAMES['AMP_BIAS_50K']['50K'] is not None:
+        if '_cu' in CABLE_CONFIG_NAMES['AMP_BIAS_50K']['50K'].lower():
+            resistance = R_Cu_50K
+            name = "ohmic_Cu"
+        if '_mn' in CABLE_CONFIG_NAMES['AMP_BIAS_50K']['50K'].lower():
+            resistance = R_Manganin_50K
+            name = "ohmic_Mn"
+        if '_ybco' in CABLE_CONFIG_NAMES['AMP_BIAS_50K']['50K'].lower():
+            resistance = 0.0
+            name = "ohmic_YBCO"
+    else:
+        resistance = 0.0
+        name = "ohmic_zero"
+
+    # Ohmic Resistor
+    if CABLE_CONFIG_NAMES['AMP_BIAS_50K']['50K'] is not None:
+        if 'HEMT' in CABLE_CONFIG_NAMES['AMP_BIAS_50K']['50K']:
+            ohmic_resistor = AMP_OHMIC_RESISTOR(resistance, current, name)
+            if COMP_CONFIG['AMP_BIAS_50K']['50K']is not None:
+                COMP_CONFIG['AMP_BIAS_50K']['50K'].append(ohmic_resistor)
+            else:
+                COMP_CONFIG['AMP_BIAS_50K']['50K'] = [ohmic_resistor]
+    return COMP_CONFIG
+########################################################################
+# # Function to append generate ohmic resistor
+# def get_amp_ohmic_resistor(CABLE_CONFIG_NAMES, COMP_CONFIG):
+#     # Ohmic resistance for amplifier Biasing
+#     resistance = None
+#     name = None
+#     if '_cu' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+#         resistance = R_Cu
+#         name = "ohmic_Cu"
+#     if '_mn' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+#         resistance = R_Manganin
+#         name = "ohmic_Mn"
+#     if '_ybco' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+#         resistance = 0.0
+#         name = "ohmic_YBCO"
+    
+#     # Current in amplifier
+#     current = None
+#     for component in COMP_CONFIG['AMP_BIAS']['4K']:
+#         if isinstance(component, AMPLIFIER):
+#             current = component.I
+    
+#     # Ohmic Resistor
+#     if 'HEMT' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+#         num_params = len(CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_')) # HEMT_13w_Bias_Mn vs # HEMT_Bias_Mn
+#         if num_params == 3: # HEMT_Bias_Mn
+#             ohmic_resistor = AMP_OHMIC_RESISTOR(resistance, current, name)
+#         if num_params > 3:      
+#             _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # HEMT_13w_Bias_Mn
+#             num_split = (int(tot_no_of_wires[:-1]) - 1)/2 # [V_GS, (V_DS, GND)]
+#             eqv_resistance = resistance/(2*num_split)
+#             ohmic_resistor = AMP_OHMIC_RESISTOR(eqv_resistance, current, name)
+#     else:
+#         if 'SIS_v1' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+#             _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v1_5w_Bias_Mn 
+#             num_LO_pair    = (int(tot_no_of_wires[:-1]) - 3)/2 # [SIS_up, SIS_down, GND, (LO_in, LO_out)]
         
-    return ohmic_resistor
+#         if 'SIS_v2' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+#             _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v2_9w_Bias_Mn 
+#             num_LO_pair    = (int(tot_no_of_wires[:-1]) - 7)/2 # [SIS_up, SIS_up_V+, SIS_up_V-, SIS_down, SIS_down_V+, SIS_down_V-, GND, (LO_in, LO_out)]
+                
+#         current_list   = SIS_current_split(current, num_LO_pair)
+#         ohmic_resistor = SIS_OHMIC_RESISTOR(resistance, current_list, name)
+        
+#     return ohmic_resistor
 
 # Amplifier Class
 #################
@@ -414,6 +569,34 @@ class JJ_Detector():
             
         return self.power # dissipative power in Watts due to biasing (always ON)
 ################################################################################
+      
+################################################################################
+# JJ Detector Integrated with Photomixer
+#################
+class CTRL():
+    def __init__(self, power, name):
+        self.name = name
+        self.power = power
+
+    def power_dissipation(self, *args, **kwargs):
+        operation = None
+        MXC_POWER = None
+        
+        # assign from positional args first
+        if len(args) >= 1:
+            operation = args[0]
+        if len(args) >= 2:
+            MXC_POWER = args[1]
+        
+        # then override with kwargs if present
+        if "operation" in kwargs:
+            operation = kwargs["operation"]
+        if "MXC_POWER" in kwargs:
+            MXC_POWER = kwargs["MXC_POWER"]
+            
+        return self.power # dissipative power in Watts due to biasing (always ON)
+################################################################################
+
 # Component Instantiations
 def create_comp_instance(comp_type_str):
     if comp_type_str == "HEMT_8G":
@@ -435,6 +618,13 @@ def create_comp_instance(comp_type_str):
         # https://lownoisefactory.com/product/lnf-lnc4_8g/
         HEMT_V = 0.1 # Volts
         HEMT_I = 3E-3 # Amperes
+        HEMT = AMPLIFIER(HEMT_V, HEMT_I, comp_type_str)
+        return HEMT
+    elif comp_type_str == "ULP_HEMT":
+        # HEMT Amplifier Instantiation
+        # 2024zengSubmWCryogenicInP
+        HEMT_V = 0.08 # Volts
+        HEMT_I = 1.5E-3 + 1E-3 # Amperes
         HEMT = AMPLIFIER(HEMT_V, HEMT_I, comp_type_str)
         return HEMT
     # elif comp_type_str == "HEMT_LP":
@@ -504,6 +694,9 @@ def create_comp_instance(comp_type_str):
     elif comp_type_str == "BIAS_RESISTOR_4K":
         BIAS_RESISTOR_4K = BIAS_RESISTOR(comp_type_str)
         return BIAS_RESISTOR_4K
+    elif comp_type_str == "BIAS_RESISTOR_Still":
+        BIAS_RESISTOR_Still = BIAS_RESISTOR(comp_type_str)
+        return BIAS_RESISTOR_Still
     elif comp_type_str == "BIAS_RESISTOR_CP":
         BIAS_RESISTOR_CP = BIAS_RESISTOR(comp_type_str)
         return BIAS_RESISTOR_CP
@@ -513,6 +706,9 @@ def create_comp_instance(comp_type_str):
     elif comp_type_str == "RESISTOR_2Q_4K":
         RESISTOR_2Q_4K = RESISTOR_2Q(comp_type_str)
         return RESISTOR_2Q_4K
+    elif comp_type_str == "RESISTOR_2Q_Still":
+        RESISTOR_2Q_Still = RESISTOR_2Q(comp_type_str)
+        return RESISTOR_2Q_Still
     elif comp_type_str == "RESISTOR_2Q_CP":
         RESISTOR_2Q_CP = RESISTOR_2Q(comp_type_str)
         return RESISTOR_2Q_CP
@@ -526,6 +722,10 @@ def create_comp_instance(comp_type_str):
         SIS_I = 22E-3 # Amperes
         JJ_D_PWR = SIS_V * SIS_I   
         JJ_D = JJ_Detector(JJ_D_PWR, comp_type_str)
+        return JJ_D
+    elif comp_type_str == "CMOS_CTRL":
+        # Assuming same as SIS-amplifier
+        CMOS_CTRL = CTRL(JJ_D_PWR, comp_type_str)
         return JJ_D
         
     else:
