@@ -20,6 +20,16 @@ R_Manganin_50K=1.896 #ohms
 PHL_YBCO_4K=4.17931e-06
 PHL_YBCO_50K=6.06000e-06
 
+
+######## Use YBCO from 50K to 4K, Delft NbTi from 4K to MXC ###############
+PHL_YBCO_Delft = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : PHL_YBCO_50K,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_YBCO_4K,  # (W/channel); from 50K plate to 4K plate
+            'Still': 540E-9,  # (W/channel); from 4K plate to Still plate
+            'CP'   : 29E-9 ,  # (W/channel); from Still plate to CP plate
+            'MXC'  : 590E-12 # (W/channel); from CP plate to MXC plate
+            }
+
 ####### 2025raicuCryogenicThermalModeling - Table V (Measured HL) ##########
 PHL_HDW   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : 7.566E-3,  # (W/channel); from 300K flange to 50K plate
@@ -321,7 +331,9 @@ CABLE_PHL_DATA = {
     "SIS_v2_19w_Bias_Mn": PHL_SIS_19w_Mn,
     "SIS_v2_21w_Bias_Mn": PHL_SIS_21w_Mn,
     "SIS_v2_21w_Bias_YBCO": PHL_SIS_21w_YBCO,
-    "JJ_Bias_YBCO":PHL_JJ_Bias_YBCO
+    "JJ_Bias_YBCO":PHL_JJ_Bias_YBCO,
+
+    "YBCO_Delft": PHL_YBCO_Delft,
  }
 #####################################################
 class CABLE():

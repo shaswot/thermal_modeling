@@ -67,6 +67,8 @@ style_map = {
 }
 
 def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbox=(1.0, 1.0)):
+    df_plot = df_plot.copy()
+    
     # # Change amplifier name and ohmic resistor to generic labels
     # --- Generate new column labels ---
     renamed_labels = [
@@ -194,6 +196,7 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     plt.show()
 
     # Save plot dataframe as pickle file
+    df_plot.loc[:, "Total"] = totals
     df_plot.to_pickle(config_name+".pkl")
 
     # Save no. of physical qubits as pickle file
