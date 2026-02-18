@@ -49,7 +49,7 @@ DC_PARAMS:
 CABLE_CONFIG_NAMES: 
   DRIVE: # [https://delft-circuits.com/product-overview/drive-lines/]
     RT:    null
-    50K:   null
+    50K:   SS_Drive
     4K:    SS_Drive
     Still: SS_Drive
     CP:    SS_Drive
@@ -70,21 +70,21 @@ CABLE_CONFIG_NAMES:
     MXC:   GHOST
   PUMP: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   null
+    50K:   SS_Drive
     4K:    SS_Drive
     Still: SS_Drive
     CP:    SS_Drive
     MXC:   SS_Drive
   READOUT_PIN: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   null
+    50K:   SS_Drive
     4K:    SS_Drive
     Still: SS_Drive
     CP:    SS_Drive
     MXC:   SS_Drive
   READOUT_POUT: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   null
+    50K:   SS_Drive
     4K:    SS_Drive
     Still: NbTi_coax
     CP:    NbTi_coax

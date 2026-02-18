@@ -2,23 +2,28 @@
 # actual heatload depends on the plate temperatures. Needs a function!
 
 # PHL_Cu Notebook
-# PHL_Cu_4K = 5.76458e-03 #[copper.ipynb]
-PHL_Cu_4K=9.14382e-03 #Watts
-PHL_Cu_50K=2.77729e-02 #Watts
+PHL_Cu_4K=6.77552e-03 #Watts
+PHL_Cu_50K=1.95862e-02 #Watts
 
-R_Cu_4K=1.041e-03 #ohms
-R_Cu_50K=3.345e-02 #ohms
+R_Cu_4K=2.323e-03 #ohms
+R_Cu_50K=4.806e-02 #ohms
 
 # PHL_Mn Notebook
-PHL_Mn_4K=3.42354e-05 #Watts
-PHL_Mn_50K=1.12122e-03 #Watts
+PHL_Mn_4K=2.53502e-05 #Watts
+PHL_Mn_50K=6.79784e-04 #Watts
 
-R_Manganin_4K=2.554 #ohms 
-R_Manganin_50K=1.896 #ohms 
+R_Manganin_4K=2.767 #ohms 
+R_Manganin_50K=2.886 #ohms 
 
 # PHL_YBCO_4K = 2.63478e-06 #[YBCO-k.ipynb]
-PHL_YBCO_4K=4.17931e-06
-PHL_YBCO_50K=6.06000e-06
+PHL_YBCO_4K=3.84152e-06
+PHL_YBCO_50K=3.96987e-06
+
+PHL_Fiber_50K=3.35281e-05
+PHL_Fiber_4K=1.61068e-06
+PHL_Fiber_Still=2.58114e-08
+PHL_Fiber_CP=2.02211e-09
+PHL_Fiber_MXC=1.89649e-12
 
 ####### 2025raicuCryogenicThermalModeling - Table V (Measured HL) ##########
 PHL_HDW   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
@@ -26,7 +31,7 @@ PHL_HDW   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '4K'   : 3.157E-4,  # (W/channel); from 50K plate to 4K plate
             'Still': 2.373E-6,  # (W/channel); from 4K plate to Still plate
             'CP'   : 5.491E-7,   # (W/channel); from Still plate to CP plate
-            'MXC'  : 1.332E-8 # (W/channel); from CP plate to MXC plate
+            'MXC'  : 1.132E-8 # (W/channel); from CP plate to MXC plate
             }
 
 ####### 2019krinnerEngineeringCryogenicSetups - Table 2 (Measured HL) ##########
@@ -86,22 +91,22 @@ PHL_NbTi = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             'CP'   : 29E-9 ,  # (W/channel); from Still plate to CP plate
             'MXC'  : 590E-12 # (W/channel); from CP plate to MXC plate
             }
-
+################################################################################
 PHL_Fiber = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-             '50K'  : 5.11807e-09,  # (W/channel); from 300K flange to 50K plate
-             '4K'   : 1.75231e-10,  # (W/channel); from 50K plate to 4K plate 
-             'Still': 2.86506e-12,  # (W/channel); from 4K plate to Still plate [2021lecocqControlReadoutSuperconducting - Pg.577]
-             'CP'   : 2.33732e-13,   # (W/channel); from Still plate to CP plate 
-             'MXC'  : 2.66186e-16# (W/channel); from CP plate to MXC plate 
+             '50K'  : PHL_Fiber_50K,  # (W/channel); from 300K flange to 50K plate
+             '4K'   : PHL_Fiber_4K,  # (W/channel); from 50K plate to 4K plate 
+             'Still': PHL_Fiber_Still,  # (W/channel); from 4K plate to Still plate [2021lecocqControlReadoutSuperconducting - Pg.577]
+             'CP'   : PHL_Fiber_CP,   # (W/channel); from Still plate to CP plate 
+             'MXC'  : PHL_Fiber_MXC# (W/channel); from CP plate to MXC plate 
             }
 
 #              # For photomixers, there is an input optical fiber and an "output" optical fiber that dissipates excess optical energy at RT
 PHL_Fiber2 = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-             '50K'  : 2 * 5.11807e-09,  # (W/channel); from 300K flange to 50K plate
-             '4K'   : 2 * 1.75231e-10,  # (W/channel); from 50K plate to 4K plate [2021lecocqControlReadoutSuperconducting - Methods: Passive heat load]
-             'Still': 2 * 2.86506e-12,  # (W/channel); from 4K plate to Still plate [assuming similar ratio with NbTi]
-             'CP'   : 2 * 2.33732e-13,   # (W/channel); from Still plate to CP plate [assuming similar ratio with NbTi]
-             'MXC'  : 2 * 2.66186e-16 # (W/channel); from CP plate to MXC plate [2021lecocqControlReadoutSuperconducting - Pg.577]
+             '50K'  : 2 * PHL_Fiber_50K,  # (W/channel); from 300K flange to 50K plate
+             '4K'   : 2 * PHL_Fiber_4K,  # (W/channel); from 50K plate to 4K plate [2021lecocqControlReadoutSuperconducting - Methods: Passive heat load]
+             'Still': 2 * PHL_Fiber_Still,  # (W/channel); from 4K plate to Still plate [assuming similar ratio with NbTi]
+             'CP'   : 2 * PHL_Fiber_CP,   # (W/channel); from Still plate to CP plate [assuming similar ratio with NbTi]
+             'MXC'  : 2 * PHL_Fiber_MXC # (W/channel); from CP plate to MXC plate [2021lecocqControlReadoutSuperconducting - Pg.577]
             }
 ################################################################################
 # At least, three and two wires are needed for two SIS mixers and one Josephson oscillator, respectively (five wires in total)
@@ -133,6 +138,22 @@ PHL_SIS_9w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
 PHL_SIS_11w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : PHL_Mn_50K*11,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Mn_4K*11,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+PHL_SIS_13w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : PHL_Mn_50K*13,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_Mn_4K*13,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+PHL_SIS_17w_Mn   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : PHL_Mn_50K*17,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_Mn_4K*17,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
             'MXC'  : None # (W/channel); from CP plate to MXC plate
@@ -179,14 +200,6 @@ PHL_SIS_9w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flang
             'MXC'  : None # (W/channel); from CP plate to MXC plate
             }
 
-PHL_SIS_9w_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
-            '50K'  : PHL_YBCO_50K*9,  # (W/channel); from 300K flange to 50K plate
-            '4K'   : PHL_YBCO_4K*9,  # (W/channel); from 50K plate to 4K plate
-            'Still': None,  # (W/channel); from 4K plate to Still plate
-            'CP'   : None,   # (W/channel); from Still plate to CP plate
-            'MXC'  : None # (W/channel); from CP plate to MXC plate
-            }
-
 PHL_SIS_11w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : PHL_Cu_50K*11,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*11,  # (W/channel); from 50K plate to 4K plate
@@ -198,6 +211,22 @@ PHL_SIS_11w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flan
 PHL_SIS_19w_Cu   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : PHL_Cu_50K*19,  # (W/channel); from 300K flange to 50K plate
             '4K'   : PHL_Cu_4K*19,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+PHL_SIS_5w_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : PHL_YBCO_50K*5,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_YBCO_4K*5,  # (W/channel); from 50K plate to 4K plate
+            'Still': None,  # (W/channel); from 4K plate to Still plate
+            'CP'   : None,   # (W/channel); from Still plate to CP plate
+            'MXC'  : None # (W/channel); from CP plate to MXC plate
+            }
+
+PHL_SIS_9w_YBCO   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
+            '50K'  : PHL_YBCO_50K*9,  # (W/channel); from 300K flange to 50K plate
+            '4K'   : PHL_YBCO_4K*9,  # (W/channel); from 50K plate to 4K plate
             'Still': None,  # (W/channel); from 4K plate to Still plate
             'CP'   : None,   # (W/channel); from Still plate to CP plate
             'MXC'  : None # (W/channel); from CP plate to MXC plate
@@ -304,23 +333,29 @@ CABLE_PHL_DATA = {
     "HEMT_13w_Bias_Mn": PHL_HEMT_13w_Bias_Mn,
     
     "SIS_v1_5w_Bias_Cu": PHL_SIS_5w_Cu,
-    "SIS_v1_7w_Bias_Cu": PHL_SIS_7w_Cu,
-    
     "SIS_v1_5w_Bias_Mn": PHL_SIS_5w_Mn,
-    "SIS_v1_7w_Bias_Mn": PHL_SIS_7w_Mn,
+    "SIS_v1_5w_Bias_YBCO": PHL_SIS_5w_YBCO,
+    "SIS_v1_11w_Bias_Mn": PHL_SIS_11w_Mn,
+    "SIS_v1_13w_Bias_Mn": PHL_SIS_13w_Mn,
+    "SIS_v1_17w_Bias_Mn": PHL_SIS_17w_Mn,
+    
+    # "SIS_v1_7w_Bias_Cu": PHL_SIS_7w_Cu,
+    
 
-    "SIS_v2_5w_Bias_Cu": PHL_SIS_5w_Cu,
-    "SIS_v2_9w_Bias_Cu": PHL_SIS_9w_Cu,
-    "SIS_v2_9w_Bias_YBCO": PHL_SIS_9w_YBCO,
-    "SIS_v2_11w_Bias_Cu": PHL_SIS_11w_Cu,
-    "SIS_v2_19w_Bias_Cu": PHL_SIS_19w_Cu,
+    # "SIS_v1_7w_Bias_Mn": PHL_SIS_7w_Mn,
 
-    "SIS_v2_5w_Bias_Mn": PHL_SIS_5w_Mn,
-    "SIS_v2_9w_Bias_Mn": PHL_SIS_9w_Mn,
-    "SIS_v2_11w_Bias_Mn": PHL_SIS_11w_Mn,
-    "SIS_v2_19w_Bias_Mn": PHL_SIS_19w_Mn,
-    "SIS_v2_21w_Bias_Mn": PHL_SIS_21w_Mn,
-    "SIS_v2_21w_Bias_YBCO": PHL_SIS_21w_YBCO,
+    # "SIS_v2_5w_Bias_Cu": PHL_SIS_5w_Cu,
+    # "SIS_v2_9w_Bias_Cu": PHL_SIS_9w_Cu,
+    # "SIS_v2_9w_Bias_YBCO": PHL_SIS_9w_YBCO,
+    # "SIS_v2_11w_Bias_Cu": PHL_SIS_11w_Cu,
+    # "SIS_v2_19w_Bias_Cu": PHL_SIS_19w_Cu,
+
+    # "SIS_v2_5w_Bias_Mn": PHL_SIS_5w_Mn,
+    # "SIS_v2_9w_Bias_Mn": PHL_SIS_9w_Mn,
+    # "SIS_v2_11w_Bias_Mn": PHL_SIS_11w_Mn,
+    # "SIS_v2_19w_Bias_Mn": PHL_SIS_19w_Mn,
+    # "SIS_v2_21w_Bias_Mn": PHL_SIS_21w_Mn,
+    # "SIS_v2_21w_Bias_YBCO": PHL_SIS_21w_YBCO,
     "JJ_Bias_YBCO":PHL_JJ_Bias_YBCO
  }
 #####################################################

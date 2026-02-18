@@ -162,9 +162,9 @@ ATT_CONFIG:
     RT:    0
     50K:   0
     4K:    0
-    Still: 10
-    CP:    10
-    MXC:   20
+    Still: 0
+    CP:    0
+    MXC:   0
   READOUT_POUT:
     RT:    0
     50K:   0

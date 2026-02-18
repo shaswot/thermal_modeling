@@ -11,7 +11,7 @@ from matplotlib.font_manager import FontProperties
 title_font = FontProperties(family='Arial',size=10, weight='bold')
 axis_label_font = FontProperties(family='Arial',size=9, weight='bold')
 tick_label_font = FontProperties(family='Arial',size=8, weight='light')
-legend_font = FontProperties(family='Arial',size=5, weight='light')
+legend_font = FontProperties(family='Arial',size=6, weight='light')
 text_font = FontProperties(family='Arial',size=7, weight='light')
 
 fontstyle = [title_font, axis_label_font, tick_label_font, legend_font, text_font]
@@ -99,7 +99,8 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     reordered_columns = passive_cols + active_cols
     
     # Reorder df_plot accordingly
-    df_plot = df_plot[reordered_columns]
+    # df_plot = df_plot[reordered_columns]
+    df_plot = df_plot.loc[:, reordered_columns].copy()
     cols = list(df_plot.columns)
     
     # Index: temperature stages (e.g., "4K", "Still", "CP", "MXC")
@@ -129,7 +130,7 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     # IEEE TQE Guidelines
     # Single column: 3.5" (wide) x 8.5" (height)
     # Double column: 7.16" (wide) x 8.5" (height)
-    fig, ax = plt.subplots(figsize=(3.5, 3))
+    fig, ax = plt.subplots(figsize=(5, 3))
     
     # 7) Build the stacked bars
     bottom = np.zeros(len(x), dtype=float)
@@ -178,12 +179,12 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     ax.set_xticklabels(xticklabels, fontproperties=tick_label_font, rotation=0)
     for label in ax.get_yticklabels() :
         label.set_fontproperties(tick_label_font)
-    ax.set_ylim(0, max(totals) + 1.5) # Set max y-value to be slightly higher than the tallest bar
+    ax.set_ylim(0, max(totals) * 1.2) # Set max y-value to be slightly higher than the tallest bar
     
     # 9) Legend: shrink and place outside
     ax.legend(ncol=1, 
               bbox_to_anchor=legend_bbox, 
-              loc='upper right',
+              loc='upper left',
               prop=legend_font,
               frameon=False,
               borderaxespad=0.)
@@ -194,6 +195,7 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     plt.show()
 
     # Save plot dataframe as pickle file
+    df_plot["Total"] = totals
     df_plot.to_pickle(config_name+".pkl")
 
     # Save no. of physical qubits as pickle file
