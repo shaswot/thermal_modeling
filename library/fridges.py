@@ -3,15 +3,6 @@ TEMP_STAGES = ['RT', '50K', '4K', 'Still', 'CP', 'MXC']
 XLD400 = { # 2019krinnerEngineeringCryogenicSetups
     'RT'   : 100,
     '50K'  : 30, # Watts
-    '4K'   : 1.5, # Watts # includes passive heat due to Cu and PhBr wires
-    'Still': 40E-3, # Watts
-    'CP'   : 200E-6, # Watts
-    'MXC'  : 19E-6 # Watts
-}
-
-XLD400_v2 = { # real 4K power without 24 twp cu and 24 twp phbr compensation
-    'RT'   : 100,
-    '50K'  : 30, # Watts
     '4K'   : 1.5, # Watts
     'Still': 40E-3, # Watts
     'CP'   : 200E-6, # Watts
@@ -48,7 +39,7 @@ XLD400_v2 = { # real 4K power without 24 twp cu and 24 twp phbr compensation
 # Most Realistic
 XLD1000SL_v3= { # 2025raicuCryogenicThermalModeling - Table 1
     'RT'   : 100, # Watts
-    '50K'  : 30, # Watts 2 *PT420 pulse tubes
+    '50K'  : 30, # Watts
     '4K'   : 0.7, # Watts
     'Still': 7e-3, # Watts
     'CP'   : 1E-3, # Watts
@@ -124,26 +115,8 @@ COLOSSUS= { # 2024hollisterUpdateColossusMK
     '50K'  : 9E3, # Watts
     '4K'   : 200, # Watts 
     'Still': 100e-3, # Watts
-    'CP'   : 2 * 1.5E-3, # Watts # 2 dilution units
-    'MXC'  : 10 *30E-6 # Watts # 10 dilution units
-}
-
-COLOSSUS_CP= { # 2024hollisterUpdateColossusMK
-    'RT'   : 20E3, # Watts
-    '50K'  : 9E3, # Watts
-    '4K'   : 200, # Watts 
-    'Still': 100e-3, # Watts
-    'CP'   : 4 * 1.5E-3, # Watts
-    'MXC'  : 8 *30E-6 # Watts
-}
-
-COLOSSUS_MXC= { # 2024hollisterUpdateColossusMK
-    'RT'   : 20E3, # Watts
-    '50K'  : 9E3, # Watts
-    '4K'   : 200, # Watts 
-    'Still': 100e-3, # Watts
-    'CP'   : 1 * 1.5E-3, # Watts
-    'MXC'  : 11 *30E-6 # Watts
+    'CP'   : 3E-3, # Watts
+    'MXC'  : 300E-6 # Watts
 }
 
 FRIDGE_LIBRARY = {
@@ -160,6 +133,4 @@ FRIDGE_LIBRARY = {
     # "ULVAC_v3": ULVAC_v3,
     # "ULVAC_v4":ULVAC_v4,
     "COLOSSUS":COLOSSUS,
-    "COLOSSUS_CP":COLOSSUS_CP,
-    "COLOSSUS_MXC":COLOSSUS_MXC,
 }

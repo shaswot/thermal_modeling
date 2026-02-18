@@ -91,10 +91,10 @@ def add_ohmic_resistors_amp_at_4K(CABLE_CONFIG_NAMES, COMP_CONFIG):
     name = None
     if CABLE_CONFIG_NAMES['AMP_BIAS']['50K'] is not None:
         if '_cu' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K'].lower():
-            resistance = R_Cu_50K + R_Cu_4K # half of ohmic heat from 4K flows to 50K stage
+            resistance = R_Cu_50K
             name = "ohmic_Cu"
         if '_mn' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K'].lower():
-            resistance = R_Manganin_50K + R_Manganin_4K # half of ohmic heat from 4K flows to 50K stage
+            resistance = R_Manganin_50K
             name = "ohmic_Mn"
         if '_ybco' in CABLE_CONFIG_NAMES['AMP_BIAS']['50K'].lower():
             resistance = 0.0
@@ -169,6 +169,50 @@ def add_ohmic_resistors_amp_at_50K(CABLE_CONFIG_NAMES, COMP_CONFIG):
                 COMP_CONFIG['AMP_BIAS_50K']['50K'] = [ohmic_resistor]
     return COMP_CONFIG
 ########################################################################
+# # Function to append generate ohmic resistor
+# def get_amp_ohmic_resistor(CABLE_CONFIG_NAMES, COMP_CONFIG):
+#     # Ohmic resistance for amplifier Biasing
+#     resistance = None
+#     name = None
+#     if '_cu' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+#         resistance = R_Cu
+#         name = "ohmic_Cu"
+#     if '_mn' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+#         resistance = R_Manganin
+#         name = "ohmic_Mn"
+#     if '_ybco' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].lower():
+#         resistance = 0.0
+#         name = "ohmic_YBCO"
+    
+#     # Current in amplifier
+#     current = None
+#     for component in COMP_CONFIG['AMP_BIAS']['4K']:
+#         if isinstance(component, AMPLIFIER):
+#             current = component.I
+    
+#     # Ohmic Resistor
+#     if 'HEMT' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+#         num_params = len(CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_')) # HEMT_13w_Bias_Mn vs # HEMT_Bias_Mn
+#         if num_params == 3: # HEMT_Bias_Mn
+#             ohmic_resistor = AMP_OHMIC_RESISTOR(resistance, current, name)
+#         if num_params > 3:      
+#             _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # HEMT_13w_Bias_Mn
+#             num_split = (int(tot_no_of_wires[:-1]) - 1)/2 # [V_GS, (V_DS, GND)]
+#             eqv_resistance = resistance/(2*num_split)
+#             ohmic_resistor = AMP_OHMIC_RESISTOR(eqv_resistance, current, name)
+#     else:
+#         if 'SIS_v1' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+#             _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v1_5w_Bias_Mn 
+#             num_LO_pair    = (int(tot_no_of_wires[:-1]) - 3)/2 # [SIS_up, SIS_down, GND, (LO_in, LO_out)]
+        
+#         if 'SIS_v2' in CABLE_CONFIG_NAMES['AMP_BIAS']['4K']:
+#             _, _, tot_no_of_wires, _, _ = CABLE_CONFIG_NAMES['AMP_BIAS']['4K'].split('_') # SIS_v2_9w_Bias_Mn 
+#             num_LO_pair    = (int(tot_no_of_wires[:-1]) - 7)/2 # [SIS_up, SIS_up_V+, SIS_up_V-, SIS_down, SIS_down_V+, SIS_down_V-, GND, (LO_in, LO_out)]
+                
+#         current_list   = SIS_current_split(current, num_LO_pair)
+#         ohmic_resistor = SIS_OHMIC_RESISTOR(resistance, current_list, name)
+        
+#     return ohmic_resistor
 
 # Amplifier Class
 #################
@@ -422,7 +466,30 @@ class PhotoMixer():
 #####################
         
 
+# Photodetector Class
+#####################
+# """
+# # "[2021lecocqControlReadoutSuperconducting - Methods: Primer on photodetection: Photocureent]"
+# A photodiode can be modeled as a high impedance current source whose current is proportional to the incident optical power, $P_o$ .
+# The responsivity of the photodiode $\mathcal{R}$, measured in $A W^{-1}$, determines the amount of current produced by the photodiode when optical power is incident on it.
+# Thus, the photocurrent produced by the photodiode is
 
+# $ I = \mathcal{R}  P_o$
+
+# [//]: # "[2021lecocqControlReadoutSuperconducting - Methods: Active heat load]"
+# When this photocurrent flows into an impedance $Z$, the microwave-frequency power is 
+
+# $P_\mu = \frac{1}{2} I^2 . Z$
+
+# Thus, combining the above two relations, we get
+
+# $P_\mu = \frac{1}{2}( \mathcal{R}  P_o)^2 Z$
+
+# Rearranging, we get
+# $P_o = \sqrt{\frac{2 P_\mu}{ZR^2}}$
+
+# In the photonic link approach, the optical power is fully dissipated as heat. Thus, if the qubit requires a microwave signal with power $P_\mu$, then the required incident optical power is $P_o$ (given by the above expression) which is dissipated as heat (i.e., the active load of the photodetector).
+# """
 
 class PhotoDetector():
     def __init__(self, Z, R, name):
@@ -592,11 +659,7 @@ def create_comp_instance(comp_type_str):
     elif comp_type_str == "SIS":
         # SIS Amplifier Instantiation      
         # Active Power [2025murayamaFabricationEvaluationWaveguide]
-        # SIS_V = 305E-6 # Volts (Local oscillator)
-        # SIS_I = 22E-3 # Amperes
-
-        # (9.3E-3*25E-6 + 10.5E-3*110E-6 + 0.305E-3*22E-3) = 8.1 uW / 22E-3
-        SIS_V = 368.068E-6 # equivalent volts for same power of 8.1 uW
+        SIS_V = 305E-6 # Volts (Local oscillator)
         SIS_I = 22E-3 # Amperes
         SIS = AMPLIFIER(SIS_V, SIS_I, comp_type_str)
         return SIS
