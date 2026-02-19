@@ -35,6 +35,7 @@ CABLE_TYPES:
   - READOUT_PIN
   - READOUT_POUT
   - AMP_BIAS  # Amplifier Biasing Line
+  - AMP_BIAS_50K  # Amplifier Biasing Line
   - DC_TERMINAL # Directional Coupler termination relocated to 4K
 
 # DC_PARAMS:
@@ -48,11 +49,11 @@ CABLE_TYPES:
 CABLE_CONFIG_NAMES: 
   DRIVE: # 2024joshiScalingSuperconductingQuantum
     RT:    null
-    50K:   Ag
-    4K:    Ag
-    Still: Ag
-    CP:    Ag
-    MXC:   Ag
+    50K:   Fiber
+    4K:    Fiber
+    Still: Fiber
+    CP:    Fiber
+    MXC:   Fiber
   # FLUX_BIAS:  # [https://delft-circuits.com/product-overview/flux-lines/]
   #   RT:    null
   #   50K:   Ag
@@ -76,11 +77,11 @@ CABLE_CONFIG_NAMES:
     MXC:   Ag
   READOUT_PIN: # 2024joshiScalingSuperconductingQuantum
     RT:    null
-    50K:   Ag
-    4K:    Ag
-    Still: Ag
-    CP:    Ag
-    MXC:   Ag
+    50K:   Fiber
+    4K:    Fiber
+    Still: Fiber
+    CP:    Fiber
+    MXC:   Fiber
   READOUT_POUT: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
     50K:   Ag
@@ -90,8 +91,15 @@ CABLE_CONFIG_NAMES:
     MXC:   NbTi
   AMP_BIAS:  # DC Bias Lines
     RT:    null
-    50K:   HEMT_Bias_Cu
-    4K:    HEMT_Bias_Cu 
+    50K:   HEMT_Bias_Mn
+    4K:    HEMT_Bias_Mn 
+    Still: null
+    CP:    null
+    MXC:   null
+  AMP_BIAS_50K:  # DC Bias Lines
+    RT:    null
+    50K:   HEMT_Bias_Mn
+    4K:    null
     Still: null
     CP:    null
     MXC:   null
@@ -123,6 +131,8 @@ ACTIVATION_MATRIX:
         - READOUT
     AMP_BIAS: # always ON
         - IDLE
+    AMP_BIAS_50K: # always ON
+        - IDLE
     DC_TERMINAL: # always ON
         - IDLE
 
@@ -133,10 +143,10 @@ ATT_CONFIG:
   DRIVE: # 
     RT:    0
     50K:   0
-    4K:    20
-    Still: 10
-    CP:    10
-    MXC:   20
+    4K:    0
+    Still: 0
+    CP:    0
+    MXC:   0
   # FLUX_BIAS: 
   #   RT:    0
   #   50K:   0
@@ -161,10 +171,10 @@ ATT_CONFIG:
   READOUT_PIN: # Assuming same as the DRIVE line
     RT:    0
     50K:   0
-    4K:    20
-    Still: 10
-    CP:    10
-    MXC:   20
+    4K:    0
+    Still: 0
+    CP:    0
+    MXC:   0
   READOUT_POUT:
     RT:    0
     50K:   0
@@ -173,6 +183,13 @@ ATT_CONFIG:
     CP:    0
     MXC:   0
   AMP_BIAS: 
+    RT:    0
+    50K:   0
+    4K:    0
+    Still: 0
+    CP:    0
+    MXC:   0
+  AMP_BIAS_50K: 
     RT:    0
     50K:   0
     4K:    0
@@ -197,7 +214,7 @@ COMP_CONFIG_NAMES:
     4K:    null
     Still: null
     CP:    null
-    MXC:   null
+    MXC:   PD
   # FLUX_BIAS:
   #   RT:    null
   #   50K:   null
@@ -225,7 +242,7 @@ COMP_CONFIG_NAMES:
     4K:    null
     Still: null
     CP:    null
-    MXC:   null
+    MXC:   PD
   READOUT_POUT:
     RT:    null
     50K:   null
@@ -236,7 +253,14 @@ COMP_CONFIG_NAMES:
   AMP_BIAS:
     RT:    null
     50K:   null
-    4K:    HEMT_8G # Ohmic resistor will be added later on
+    4K:    HEMT_8G_LP # Ohmic resistor will be added later on
+    Still: null
+    CP:    null
+    MXC:   null
+  AMP_BIAS_50K:
+    RT:    null
+    50K:   HEMT_8G # Ohmic resistor will be added later on
+    4K:    null
     Still: null
     CP:    null
     MXC:   null

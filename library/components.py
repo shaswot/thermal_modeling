@@ -16,7 +16,8 @@ from library.utils import watts_to_dbm, dBm2Watts
 def add_flux_coupler_DC_resistance(COMP_CONFIG,
                                    QUBIT_FREQ, 
                                    QUBIT_COUPLING, 
-                                   R_4K, R_Still, R_CP, R_MXC):
+                                   R_4K, R_Still, R_CP, R_MXC,
+                                   I_BIAS, I_2Q):
     if QUBIT_FREQ == "TUNABLE":
         [comp.set_values(R_4K, I_BIAS) for comp in COMP_CONFIG["FLUX_BIAS"]["4K"]]
         [comp.set_values(R_Still, I_BIAS) for comp in COMP_CONFIG["FLUX_BIAS"]["Still"]]

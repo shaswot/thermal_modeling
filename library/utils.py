@@ -131,7 +131,7 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     # IEEE TQE Guidelines
     # Single column: 3.5" (wide) x 8.5" (height)
     # Double column: 7.16" (wide) x 8.5" (height)
-    fig, ax = plt.subplots(figsize=(3.5, 3))
+    fig, ax = plt.subplots(figsize=(5, 3))
     
     # 7) Build the stacked bars
     bottom = np.zeros(len(x), dtype=float)
@@ -180,12 +180,12 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     ax.set_xticklabels(xticklabels, fontproperties=tick_label_font, rotation=0)
     for label in ax.get_yticklabels() :
         label.set_fontproperties(tick_label_font)
-    ax.set_ylim(0, max(totals) + 1.5) # Set max y-value to be slightly higher than the tallest bar
+    ax.set_ylim(0, max(1.1,max(totals) *1.2)) # Set max y-value to be slightly higher than the tallest bar
     
     # 9) Legend: shrink and place outside
     ax.legend(ncol=1, 
               bbox_to_anchor=legend_bbox, 
-              loc='upper right',
+              loc='upper left',
               prop=legend_font,
               frameon=False,
               borderaxespad=0.)
