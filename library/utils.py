@@ -15,56 +15,120 @@ legend_font = FontProperties(family='Arial',size=5, weight='light')
 text_font = FontProperties(family='Arial',size=7, weight='light')
 
 fontstyle = [title_font, axis_label_font, tick_label_font, legend_font, text_font]
-
-# Style map: a dict keyed by (Cable, Component, Operation) -> {'color': ..., 'hatch': ...}
 style_map = {
-    # --- DRIVE cable ---
-    ('DRIVE', 'PASSIVE', 'IDLE'): {'color': '#1f77b4', 'hatch': ''},     # Tab20 dark blue (#1f77b4)
-    ('DRIVE', 'ATT', '1Q'):        {'color': '#9ecae1', 'hatch': '++++'},   # Tab20 light blue (#9ecae1)
-    ('DRIVE', 'ATT', '2Q'):        {'color': '#9ecae1', 'hatch': '////'},   # same light blue, (#9ecae1)
-    ('DRIVE', 'PD', '1Q'):         {'color': '#17becf', 'hatch': '++++'}, # Tab20 cyan (#17becf)
-    ('DRIVE', 'PD', '2Q'):         {'color': '#17becf', 'hatch': '////'}, # Tab20 cyan (#17becf)
+    # =====================
+    # DRIVE (blue family)
+    # =====================
+    ('DRIVE', 'PASSIVE', 'IDLE'): {'color': '#0072B2', 'hatch': ''},       # base blue
+    ('DRIVE', 'ATT', '1Q'):       {'color': '#56B4E9', 'hatch': '++++'},   # light blue
+    ('DRIVE', 'ATT', '2Q'):       {'color': '#2C7FB8', 'hatch': '////'},   # mid blue
+    ('DRIVE', 'PD', '1Q'):        {'color': '#A6CEE3', 'hatch': '++++'},   # very light blue
+    ('DRIVE', 'PD', '2Q'):        {'color': '#6BAED6', 'hatch': '////'},   # light-mid blue
 
-    # --- FLUX_BIAS cable ---
-    ('FLUX_BIAS', 'PASSIVE', 'IDLE'): {'color': '#8c564b', 'hatch': ''},     # Tab20 brown (#8c564b)
-    ('FLUX_BIAS', 'BIAS_RESISTOR_4K', 'IDLE'): {'color': '#c49c94', 'hatch': 'xxx'},   # Tab20 light brown (#c49c94)
-    ('FLUX_BIAS', 'BIAS_RESISTOR_Still', 'IDLE'): {'color': '#9e6440', 'hatch': 'xxx'},  
-    ('FLUX_BIAS', 'BIAS_RESISTOR_CP', 'IDLE'): {'color': '#f69b63', 'hatch': 'xxx'},   
-    ('FLUX_BIAS', 'BIAS_RESISTOR_MXC', 'IDLE'): {'color': '#ffc77f', 'hatch': 'xxx'},  
+    # =========================
+    # FLUX_BIAS (vermillion family)
+    # =========================
+    ('FLUX_BIAS', 'PASSIVE', 'IDLE'):           {'color': '#D55E00', 'hatch': ''},     # vermillion
+    ('FLUX_BIAS', 'BIAS_RESISTOR_4K', 'IDLE'):  {'color': '#F4A582', 'hatch': '...'},  # light vermillion
+    ('FLUX_BIAS', 'BIAS_RESISTOR_Still', 'IDLE'):{'color': '#E08214', 'hatch': '...'}, # orange-brown
+    ('FLUX_BIAS', 'BIAS_RESISTOR_CP', 'IDLE'):  {'color': '#FDB863', 'hatch': '...'},  # lighter orange
+    ('FLUX_BIAS', 'BIAS_RESISTOR_MXC', 'IDLE'): {'color': '#FEE0B6', 'hatch': '...'},  # very light
 
-    # --- COUPLER cable ---
-    ('COUPLER', 'PASSIVE', 'IDLE'): {'color': '#bcbd22', 'hatch': ''},     # Tab20 olive (#bcbd22),
-    ('COUPLER', 'RESISTOR_2Q_4K', '2Q'): {'color': '#dbdb8d', 'hatch': '...'},   # Tab20 light olive (#dbdb8d),
-    ('COUPLER', 'RESISTOR_2Q_Still', '2Q'): {'color': '#a2d066', 'hatch': '...'},   
-    ('COUPLER', 'RESISTOR_2Q_MXC', '2Q'): {'color': '#d1e866', 'hatch': '...'},   
-    ('COUPLER', 'RESISTOR_2Q_CP', '2Q'): {'color': '#ffff66', 'hatch': '...'},   
-    
-    # --- PUMP cable ---
-    ('PUMP', 'PASSIVE', 'IDLE'):   {'color': '#ff7f0e', 'hatch': ''},    # Tab20 light orange (#ff7f0e)
-    ('PUMP', 'ATT', 'READOUT'):    {'color': '#ffbb78', 'hatch': '|||'},   # Tab20 dark orange (#ffbb78)
+    # =====================
+    # COUPLER (green family)
+    # =====================
+    ('COUPLER', 'PASSIVE', 'IDLE'):            {'color': '#009E73', 'hatch': ''},      # green
+    ('COUPLER', 'RESISTOR_2Q_4K', '2Q'):       {'color': '#66C2A5', 'hatch': '...'},   # light green
+    ('COUPLER', 'RESISTOR_2Q_Still', '2Q'):    {'color': '#41AE76', 'hatch': '...'},   # mid green
+    ('COUPLER', 'RESISTOR_2Q_CP', '2Q'):       {'color': '#A1D99B', 'hatch': '...'},   # lighter green
+    ('COUPLER', 'RESISTOR_2Q_MXC', '2Q'):      {'color': '#C7E9C0', 'hatch': '...'},   # very light green
 
-    # --- READOUT_PIN cable ---
-    ('READOUT_PIN', 'PASSIVE', 'IDLE'):  {'color': '#2ca02c', 'hatch': ''},  # Tab20 dark green (#2ca02c)
-    ('READOUT_PIN', 'ATT', 'READOUT'):   {'color': '#98df8a', 'hatch': '|||'}, # Tab20 light green (#98df8a)
-    ('READOUT_PIN', 'PD', 'READOUT'): {'color': '#17becf', 'hatch': '|||'}, # Tab20 cyan (#17becf)
+    # =====================
+    # PUMP (orange family)
+    # =====================
+    ('PUMP', 'PASSIVE', 'IDLE'):   {'color': '#E69F00', 'hatch': ''},      # orange
+    ('PUMP', 'ATT', 'READOUT'):    {'color': '#F6C65B', 'hatch': '|||'},   # light orange
 
-    # --- READOUT_POUT cable ---
-    ('READOUT_POUT', 'PASSIVE', 'IDLE'): {'color': '#d62728', 'hatch': ''},  # Tab20 dark red (#d62728)
+    # =============================
+    # READOUT_PIN (purple family)
+    # =============================
+    ('READOUT_PIN', 'PASSIVE', 'IDLE'):  {'color': '#CC79A7', 'hatch': ''},     # purple
+    ('READOUT_PIN', 'ATT', 'READOUT'):   {'color': '#E3A6C9', 'hatch': '|||'},  # light purple
+    ('READOUT_PIN', 'PD', 'READOUT'):    {'color': '#F1C6DE', 'hatch': '|||'},  # very light purple (keep PD hatch consistent)
 
-    # --- AMP_BIAS cable ---
-    ('AMP_BIAS', 'PASSIVE', 'IDLE'):     {'color': '#9467bd', 'hatch': ''},  # Tab20 dark purple (#9467bd)
-    ('AMP_BIAS', 'AMP', 'IDLE'):     {'color': '#c5b0d5', 'hatch': 'xxx'},  # Tab20 light purple (#c5b0d5)
-    ('AMP_BIAS', 'AMP_OHMIC', 'IDLE'):    {'color': '#c5b0d5', 'hatch': '...'},  # same dark purple
+    # =============================
+    # READOUT_POUT (yellow-brown family)
+    # =============================
+    ('READOUT_POUT', 'PASSIVE', 'IDLE'): {'color': '#B79F00', 'hatch': ''},     # darker yellow (less glaring than pure yellow)
 
-    # --- AMP_BIAS_50K cable ---
-    ('AMP_BIAS_50K', 'PASSIVE', 'IDLE'):     {'color': '#b96456', 'hatch': ''},  
-    ('AMP_BIAS_50K', 'AMP', 'IDLE'):     {'color': '#ca9c80', 'hatch': 'xxx'},  
-    ('AMP_BIAS_50K', 'AMP_OHMIC', 'IDLE'):    {'color': '#ca9c80', 'hatch': '...'},  
+    # =====================
+    # AMP_BIAS (gray family)
+    # =====================
+    ('AMP_BIAS', 'PASSIVE', 'IDLE'):   {'color': '#4D4D4D', 'hatch': ''},       # dark gray
+    ('AMP_BIAS', 'AMP', 'IDLE'):       {'color': '#7F7F7F', 'hatch': 'xxx'},    # mid gray
+    ('AMP_BIAS', 'AMP_OHMIC', 'IDLE'): {'color': '#A6A6A6', 'hatch': '...'},    # light gray
 
-    # --- DC_TERMINAL cable ---
-    ('DC_TERMINAL', 'PASSIVE', 'IDLE'):     {'color': '#686868', 'hatch': ''},  # #686868
-    
+    # ==========================
+    # AMP_BIAS_50K (brown family)
+    # ==========================
+    ('AMP_BIAS_50K', 'PASSIVE', 'IDLE'):   {'color': '#8C510A', 'hatch': ''},     # brown
+    ('AMP_BIAS_50K', 'AMP', 'IDLE'):      {'color': '#BF812D', 'hatch': 'xxx'},  # light brown
+    ('AMP_BIAS_50K', 'AMP_OHMIC', 'IDLE'):{'color': '#DFC27D', 'hatch': '...'},  # pale brown
+
+    # =====================
+    # DC_TERMINAL (black-ish neutral)
+    # =====================
+    ('DC_TERMINAL', 'PASSIVE', 'IDLE'): {'color': '#1A1A1A', 'hatch': ''},       # near-black
 }
+# # Style map: a dict keyed by (Cable, Component, Operation) -> {'color': ..., 'hatch': ...}
+# style_map = {
+#     # --- DRIVE cable ---
+#     ('DRIVE', 'PASSIVE', 'IDLE'): {'color': '#1f77b4', 'hatch': ''},     # Tab20 dark blue (#1f77b4)
+#     ('DRIVE', 'ATT', '1Q'):        {'color': '#9ecae1', 'hatch': '++++'},   # Tab20 light blue (#9ecae1)
+#     ('DRIVE', 'ATT', '2Q'):        {'color': '#9ecae1', 'hatch': '////'},   # same light blue, (#9ecae1)
+#     ('DRIVE', 'PD', '1Q'):         {'color': '#17becf', 'hatch': '++++'}, # Tab20 cyan (#17becf)
+#     ('DRIVE', 'PD', '2Q'):         {'color': '#17becf', 'hatch': '////'}, # Tab20 cyan (#17becf)
+
+#     # --- FLUX_BIAS cable ---
+#     ('FLUX_BIAS', 'PASSIVE', 'IDLE'): {'color': '#8c564b', 'hatch': ''},     # Tab20 brown (#8c564b)
+#     ('FLUX_BIAS', 'BIAS_RESISTOR_4K', 'IDLE'): {'color': '#c49c94', 'hatch': 'xxx'},   # Tab20 light brown (#c49c94)
+#     ('FLUX_BIAS', 'BIAS_RESISTOR_Still', 'IDLE'): {'color': '#9e6440', 'hatch': 'xxx'},  
+#     ('FLUX_BIAS', 'BIAS_RESISTOR_CP', 'IDLE'): {'color': '#f69b63', 'hatch': 'xxx'},   
+#     ('FLUX_BIAS', 'BIAS_RESISTOR_MXC', 'IDLE'): {'color': '#ffc77f', 'hatch': 'xxx'},  
+
+#     # --- COUPLER cable ---
+#     ('COUPLER', 'PASSIVE', 'IDLE'): {'color': '#bcbd22', 'hatch': ''},     # Tab20 olive (#bcbd22),
+#     ('COUPLER', 'RESISTOR_2Q_4K', '2Q'): {'color': '#dbdb8d', 'hatch': '...'},   # Tab20 light olive (#dbdb8d),
+#     ('COUPLER', 'RESISTOR_2Q_Still', '2Q'): {'color': '#a2d066', 'hatch': '...'},   
+#     ('COUPLER', 'RESISTOR_2Q_MXC', '2Q'): {'color': '#d1e866', 'hatch': '...'},   
+#     ('COUPLER', 'RESISTOR_2Q_CP', '2Q'): {'color': '#ffff66', 'hatch': '...'},   
+    
+#     # --- PUMP cable ---
+#     ('PUMP', 'PASSIVE', 'IDLE'):   {'color': '#ff7f0e', 'hatch': ''},    # Tab20 light orange (#ff7f0e)
+#     ('PUMP', 'ATT', 'READOUT'):    {'color': '#ffbb78', 'hatch': '|||'},   # Tab20 dark orange (#ffbb78)
+
+#     # --- READOUT_PIN cable ---
+#     ('READOUT_PIN', 'PASSIVE', 'IDLE'):  {'color': '#2ca02c', 'hatch': ''},  # Tab20 dark green (#2ca02c)
+#     ('READOUT_PIN', 'ATT', 'READOUT'):   {'color': '#98df8a', 'hatch': '|||'}, # Tab20 light green (#98df8a)
+#     ('READOUT_PIN', 'PD', 'READOUT'): {'color': '#17becf', 'hatch': '|||'}, # Tab20 cyan (#17becf)
+
+#     # --- READOUT_POUT cable ---
+#     ('READOUT_POUT', 'PASSIVE', 'IDLE'): {'color': '#d62728', 'hatch': ''},  # Tab20 dark red (#d62728)
+
+#     # --- AMP_BIAS cable ---
+#     ('AMP_BIAS', 'PASSIVE', 'IDLE'):     {'color': '#9467bd', 'hatch': ''},  # Tab20 dark purple (#9467bd)
+#     ('AMP_BIAS', 'AMP', 'IDLE'):     {'color': '#c5b0d5', 'hatch': 'xxx'},  # Tab20 light purple (#c5b0d5)
+#     ('AMP_BIAS', 'AMP_OHMIC', 'IDLE'):    {'color': '#c5b0d5', 'hatch': '...'},  # same dark purple
+
+#     # --- AMP_BIAS_50K cable ---
+#     ('AMP_BIAS_50K', 'PASSIVE', 'IDLE'):     {'color': '#b96456', 'hatch': ''},  
+#     ('AMP_BIAS_50K', 'AMP', 'IDLE'):     {'color': '#ca9c80', 'hatch': 'xxx'},  
+#     ('AMP_BIAS_50K', 'AMP_OHMIC', 'IDLE'):    {'color': '#ca9c80', 'hatch': '...'},  
+
+#     # --- DC_TERMINAL cable ---
+#     ('DC_TERMINAL', 'PASSIVE', 'IDLE'):     {'color': '#686868', 'hatch': ''},  # #686868
+    
+# }
 
 def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbox=(1.0, 1.0)):
     # # Change amplifier name and ohmic resistor to generic labels
