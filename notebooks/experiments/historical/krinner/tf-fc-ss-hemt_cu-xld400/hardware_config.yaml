@@ -1,7 +1,7 @@
 ######################
 # Fridge Configuration
 ######################
-FRIDGE_NAME: KIDE_v3
+FRIDGE_NAME: XLD400
 
 ######################
 # Qubit Configuration
@@ -12,7 +12,7 @@ QUBIT_COUPLING: "TUNABLE"
 QUBIT_TYPES: # from spreadsheet (inspired by 2017versluisScalableQuantumCircuit)
     DATA : 4 
     ANCILLA: 4
-    COUPLER: 14 # Refer Explanations no. 5
+    COUPLER: 8 # actually there is no coupler wire. 2Q gates are performed by pulses in the flux bias cable
 
 OPERATIONS:
     - 1Q
@@ -35,72 +35,64 @@ CABLE_TYPES:
   - READOUT_PIN
   - READOUT_POUT
   - AMP_BIAS  # Amplifier Biasing Line
-  - AMP_BIAS_50K  # Amplifier Biasing Line
   - DC_TERMINAL # Directional Coupler termination relocated to 4K
 
 DC_PARAMS:
     R_4K: 1249.875
-    R_Still: 0.0 # Assuming superconducting NbTi lines below 4K for FLUX_BIAS
-    R_CP: 0.0 # Assuming superconducting NbTi lines below 4K for FLUX_BIAS
-    R_MXC: 0.0 # Assuming superconducting NbTi lines below 4K for FLUX_BIAS
-    I_BIAS: 0.4E-3
+    R_Still: 0 # krinner
+    R_CP: 0.42 # krinner
+    R_MXC: 0.15 # krinner
+    I_BIAS: 0.57E-3 #sqrt(Imax/3), Imax = 1
     I_2Q: 0.4E-3
 
 
 CABLE_CONFIG_NAMES: 
-  DRIVE: # 2024joshiScalingSuperconductingQuantum
+  DRIVE: # [https://delft-circuits.com/product-overview/drive-lines/]
     RT:    null
-    50K:   YBCO_coax
-    4K:    YBCO_coax
-    Still: NbTi
-    CP:    NbTi
-    MXC:   NbTi
+    50K:   SS_Drive
+    4K:    SS_Drive
+    Still: SS_Drive
+    CP:    SS_Drive
+    MXC:   SS_Drive
   FLUX_BIAS:  # [https://delft-circuits.com/product-overview/flux-lines/]
     RT:    null
-    50K:   YBCO_coax
-    4K:    YBCO_coax
-    Still: NbTi
-    CP:    NbTi
-    MXC:   NbTi
+    50K:   SS_Flux
+    4K:    SS_Flux
+    Still: SS_Flux
+    CP:    SS_Flux
+    MXC:   SS_Flux
   COUPLER: # [https://delft-circuits.com/product-overview/flux-lines/]
     RT:    null
-    50K:   YBCO_coax
-    4K:    YBCO_coax
-    Still: NbTi
-    CP:    NbTi
-    MXC:   NbTi
+    50K:   GHOST
+    4K:    GHOST
+    Still: GHOST
+    CP:    GHOST
+    MXC:   GHOST
   PUMP: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   YBCO_coax
-    4K:    YBCO_coax
-    Still: NbTi
-    CP:    NbTi
-    MXC:   NbTi
-  READOUT_PIN: # 2024joshiScalingSuperconductingQuantum
+    50K:   SS_Drive
+    4K:    SS_Drive
+    Still: SS_Drive
+    CP:    SS_Drive
+    MXC:   SS_Drive
+  READOUT_PIN: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   YBCO_coax
-    4K:    YBCO_coax
-    Still: NbTi
-    CP:    NbTi
-    MXC:   NbTi
+    50K:   SS_Drive
+    4K:    SS_Drive
+    Still: SS_Drive
+    CP:    SS_Drive
+    MXC:   SS_Drive
   READOUT_POUT: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   YBCO_coax
-    4K:    YBCO_coax
-    Still: NbTi
-    CP:    NbTi
-    MXC:   NbTi
+    50K:   SS_Drive
+    4K:    SS_Drive
+    Still: NbTi_coax
+    CP:    NbTi_coax
+    MXC:   NbTi_coax
   AMP_BIAS:  # DC Bias Lines
     RT:    null
-    50K:   HEMT_Bias_YBCO
-    4K:    HEMT_Bias_YBCO
-    Still: null
-    CP:    null
-    MXC:   null
-  AMP_BIAS_50K:  # DC Bias Lines
-    RT:    null
-    50K:   HEMT_Bias_YBCO
-    4K:    null
+    50K:   Cu_35_bias
+    4K:    Cu_35_bias
     Still: null
     CP:    null
     MXC:   null
@@ -108,9 +100,9 @@ CABLE_CONFIG_NAMES:
     RT:    null
     50K:   null
     4K:    null 
-    Still: NbTi
-    CP:    NbTi
-    MXC:   NbTi
+    Still: NbTi_coax
+    CP:    NbTi_coax
+    MXC:   NbTi_coax
 
 ###################
 # Activation Matrix
@@ -119,7 +111,7 @@ CABLE_CONFIG_NAMES:
 ACTIVATION_MATRIX:
     DRIVE:
         - 1Q
-        # - 2Q
+        #- 2Q
     FLUX_BIAS: # always ON
         - IDLE
     COUPLER: 
@@ -132,21 +124,19 @@ ACTIVATION_MATRIX:
         - READOUT
     AMP_BIAS: # always ON
         - IDLE
-    AMP_BIAS_50K: # always ON
-        - IDLE
     DC_TERMINAL: # always ON
         - IDLE
 
 ##########################
 # Attenuator Configuration
 ##########################
-ATT_CONFIG: 
+ATT_CONFIG: # arbitrary adding to 60 dB
   DRIVE: # 
     RT:    0
     50K:   0
     4K:    20
-    Still: 10
-    CP:    10
+    Still: 0
+    CP:    20
     MXC:   20
   FLUX_BIAS: 
     RT:    0
@@ -173,8 +163,8 @@ ATT_CONFIG:
     RT:    0
     50K:   0
     4K:    20
-    Still: 10
-    CP:    10
+    Still: 0
+    CP:    20
     MXC:   20
   READOUT_POUT:
     RT:    0
@@ -184,13 +174,6 @@ ATT_CONFIG:
     CP:    0
     MXC:   0
   AMP_BIAS: 
-    RT:    0
-    50K:   0
-    4K:    0
-    Still: 0
-    CP:    0
-    MXC:   0
-  AMP_BIAS_50K: 
     RT:    0
     50K:   0
     4K:    0
@@ -254,14 +237,7 @@ COMP_CONFIG_NAMES:
   AMP_BIAS:
     RT:    null
     50K:   null
-    4K:    HEMT_8G_LP # Ohmic resistor will be added later on
-    Still: null
-    CP:    null
-    MXC:   null
-  AMP_BIAS_50K:
-    RT:    null
-    50K:   HEMT_8G # Ohmic resistor will be added later on
-    4K:    null
+    4K:    HEMT_8C
     Still: null
     CP:    null
     MXC:   null
