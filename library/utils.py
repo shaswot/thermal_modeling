@@ -163,7 +163,7 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     reordered_columns = passive_cols + active_cols
     
     # Reorder df_plot accordingly
-    df_plot = df_plot[reordered_columns]
+    df_plot = df_plot[reordered_columns].copy()
     cols = list(df_plot.columns)
     
     # Index: temperature stages (e.g., "4K", "Still", "CP", "MXC")
@@ -258,6 +258,7 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     plt.show()
 
     # Save plot dataframe as pickle file
+    df_plot["Total"] = totals
     df_plot.to_pickle(config_name+".pkl")
 
     # Save no. of physical qubits as pickle file

@@ -39,9 +39,9 @@ CABLE_TYPES:
 
 DC_PARAMS:
     R_4K: 1249.875
-    R_Still: 0 # krinner
-    R_CP: 0.42 # krinner
-    R_MXC: 0.15 # krinner
+    R_Still: 0 # NbTi
+    R_CP: 0 # NbTi
+    R_MXC: 0 # NbTi
     I_BIAS: 0.57E-3 #sqrt(Imax/3), Imax = 1
     I_2Q: 0.4E-3
 
@@ -49,18 +49,18 @@ DC_PARAMS:
 CABLE_CONFIG_NAMES: 
   DRIVE: # [https://delft-circuits.com/product-overview/drive-lines/]
     RT:    null
-    50K:   SS_Drive
-    4K:    SS_Drive
-    Still: SS_Drive
-    CP:    SS_Drive
-    MXC:   SS_Drive
+    50K:   Ag
+    4K:    Ag
+    Still: Ag
+    CP:    Ag
+    MXC:   Ag
   FLUX_BIAS:  # [https://delft-circuits.com/product-overview/flux-lines/]
     RT:    null
-    50K:   SS_Flux
-    4K:    SS_Flux
-    Still: SS_Flux
-    CP:    SS_Flux
-    MXC:   SS_Flux
+    50K:   Ag
+    4K:    Ag
+    Still: NbTi
+    CP:    NbTi
+    MXC:   NbTi
   COUPLER: # [https://delft-circuits.com/product-overview/flux-lines/]
     RT:    null
     50K:   GHOST
@@ -70,25 +70,25 @@ CABLE_CONFIG_NAMES:
     MXC:   GHOST
   PUMP: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   SS_Drive
-    4K:    SS_Drive
-    Still: SS_Drive
-    CP:    SS_Drive
-    MXC:   SS_Drive
+    50K:   Ag
+    4K:    Ag
+    Still: Ag
+    CP:    Ag
+    MXC:   Ag
   READOUT_PIN: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   SS_Drive
-    4K:    SS_Drive
-    Still: SS_Drive
-    CP:    SS_Drive
-    MXC:   SS_Drive
+    50K:   Ag
+    4K:    Ag
+    Still: Ag
+    CP:    Ag
+    MXC:   Ag
   READOUT_POUT: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
-    50K:   SS_Drive
-    4K:    SS_Drive
-    Still: NbTi_coax
-    CP:    NbTi_coax
-    MXC:   NbTi_coax
+    50K:   Ag
+    4K:    Ag
+    Still: NbTi
+    CP:    NbTi
+    MXC:   NbTi
   AMP_BIAS:  # DC Bias Lines
     RT:    null
     50K:   Cu_35_bias
@@ -100,9 +100,9 @@ CABLE_CONFIG_NAMES:
     RT:    null
     50K:   null
     4K:    null 
-    Still: NbTi_coax
-    CP:    NbTi_coax
-    MXC:   NbTi_coax
+    Still: NbTi
+    CP:    NbTi
+    MXC:   NbTi
 
 ###################
 # Activation Matrix
