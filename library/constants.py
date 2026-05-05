@@ -26,5 +26,5 @@
 # R_Manganin = rho_Manganin * area * length # 4.059 Ohms
 ########################
 
-ROW_ORDER = ["DRIVE", "FLUX_BIAS", "COUPLER", "PUMP", "READOUT_PIN", "READOUT_POUT", "AMP_BIAS","AMP_BIAS_50K", "DC_TERMINAL", "JJ_BIAS"]
+ROW_ORDER = ["DRIVE", "FLUX_BIAS", "COUPLER", "PUMP", "READOUT_PIN", "READOUT_POUT", "AMP_BIAS","AMP_BIAS_50K", "DC_TERMINAL", "JJ_BIAS", "TOTAL"]
 ORDER_DICT = {row: index for index, row in enumerate(ROW_ORDER)}

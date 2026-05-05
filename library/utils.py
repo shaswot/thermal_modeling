@@ -116,6 +116,7 @@ def get_pq_dict(THL_DF,cooling_power_budget,QUBIT_GROUP_SIZE):
     
 
 def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbox=(1.0, 1.0)):
+    
     # # Change amplifier name and ohmic resistor to generic labels
     # --- Generate new column labels ---
     renamed_labels = [
@@ -227,12 +228,12 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     ax.set_xticklabels(xticklabels, fontproperties=tick_label_font, rotation=0)
     for label in ax.get_yticklabels() :
         label.set_fontproperties(tick_label_font)
-    ax.set_ylim(0, max(totals) + 1.5) # Set max y-value to be slightly higher than the tallest bar
+    ax.set_ylim(0, 1.1) # Set max y-value to be slightly higher than the tallest bar
     
     # 9) Legend: shrink and place outside
     ax.legend(ncol=1, 
               bbox_to_anchor=legend_bbox, 
-              loc='upper right',
+              loc='upper left',
               prop=legend_font,
               frameon=False,
               borderaxespad=0.)
@@ -243,15 +244,16 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     plt.show()
 
     # Save plot dataframe as pickle file
-    df_plot["Total"] = totals
-    df_plot.to_pickle(config_name+".pkl")
+    df_plot_saved = df_plot.copy()
+    df_plot_saved["Total"] = totals
+    df_plot_saved.to_pickle(config_name + ".pkl")
 
     # Save no. of physical qubits as pickle file
     df_pq = pd.DataFrame([physical_qubits_dict], index=["PQ"])
     df_pq.to_pickle("PQ_"+config_name+".pkl")
 
     # Return the plot dataframe
-    return df_plot
+    return df_plot_saved
 
 #######################################################################
 
