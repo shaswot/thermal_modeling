@@ -15,7 +15,7 @@ from library.utils import watts_to_dbm, dBm2Watts
 # Power required at the MXC for various qubit operations
 ########################################################
 DRIVE_CABLE_POWER_MXC_1Q = -71  #dBm
-DRIVE_CABLE_POWER_MXC_2Q = -66  #dBm
+# DRIVE_CABLE_POWER_MXC_2Q = -66  #dBm
 # DRIVE_CABLE_POWER_MXC_1Q = -70  #dBm
 # DRIVE_CABLE_POWER_MXC_2Q = -70  #dBm
 READOUT_PIN_POWER_MXC    = -120 #dBm (1.00e-15 W) [2021bardinMicrowavesQuantumComputing] - Sec V (Pg. 418)
@@ -47,7 +47,7 @@ def get_NO_OF_CABLES(QUBIT_TYPES, QUBIT_FREQ, QUBIT_COUPLING, READOUT_GROUP_SIZE
 def get_MXC_POWER(R_MXC, I_2Q, QUBIT_FREQ, QUBIT_COUPLING):   
     MXC_POWER = {
         "DRIVE": {"1Q": DRIVE_CABLE_POWER_MXC_1Q, 
-                  "2Q": DRIVE_CABLE_POWER_MXC_2Q,
+                  # "2Q": DRIVE_CABLE_POWER_MXC_2Q,
                   "READOUT" : None,
                   "IDLE" : None,
                  },

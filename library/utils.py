@@ -159,10 +159,7 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     # If they already are, this does nothing.
     if not isinstance(df_plot.columns, pd.MultiIndex) or df_plot.columns.nlevels != 3:
         raise ValueError("dataframe columns must be a 3-level MultiIndex: (Cable, Component, Operation)")
-    
-    
-    
-    
+        
     # 4) Define fallbacks (only used if a stack tuple isn’t in style_map)
     # fallback_colors = plt.cm.tab20.colors  # a nice, long qualitative palette
     # fallback_hatches = ['/', '\\', 'x', '-', '+', 'o', 'O', '.', '*']  # repeats cyclically
@@ -179,7 +176,7 @@ def plot_heat_load(df_plot, title, config_name, physical_qubits_dict, legend_bbo
     # IEEE TQE Guidelines
     # Single column: 3.5" (wide) x 8.5" (height)
     # Double column: 7.16" (wide) x 8.5" (height)
-    fig, ax = plt.subplots(figsize=(3.5, 3))
+    fig, ax = plt.subplots(figsize=(7.16, 3))
     
     # 7) Build the stacked bars
     bottom = np.zeros(len(x), dtype=float)

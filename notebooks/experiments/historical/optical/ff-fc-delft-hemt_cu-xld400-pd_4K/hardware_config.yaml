@@ -81,7 +81,7 @@ CABLE_CONFIG_NAMES:
     4K:    Fiber
     Still: NbTi
     CP:    NbTi
-    MXC:   NbTir
+    MXC:   NbTi
   READOUT_POUT: # [https://delft-circuits.com/product-overview/read-out-dc-lines/]
     RT:    null
     50K:   Ag
@@ -239,10 +239,10 @@ COMP_CONFIG_NAMES:
   READOUT_PIN:
     RT:    null
     50K:   null
-    4K:    null
+    4K:    PD
     Still: null
     CP:    null
-    MXC:   PD
+    MXC:   null
   READOUT_POUT:
     RT:    null
     50K:   null

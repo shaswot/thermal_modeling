@@ -111,8 +111,8 @@ XLD1000SL_v3= { # 2025raicuCryogenicThermalModeling - Table 1
 # }
 
 KIDE_v3= { # 2024blueforsKIDEProductOverview
-    'RT'   : 100, # Watts
-    '50K'  : 30 * 3, # Watts
+    'RT'   : 1000, # Watts
+    '50K'  : 350, # Watts
     '4K'   : 2 * 3, # Watts # Assuming operating temperature of 4K [https://bluefors.com/products/measurement-infrastructure/high-density-wiring/]
     'Still': 90e-3, # Bluefors SC25
     'CP'   : 1E-3 * 3, # Watts
