@@ -93,9 +93,9 @@ PHL_SS_Flux   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
 PHL_NbTi_coax   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
             '50K'  : None,  # (W/channel); from 300K flange to 50K plate
             '4K'   : None,  # (W/channel); from 50K plate to 4K plate
-            'Still': None,  # (W/channel); from 4K plate to Still plate
-            'CP'   : 0.3E-6,   # (W/channel); from Still plate to CP plate
-            'MXC'  : 20E-9 # (W/channel); from CP plate to MXC plate
+            'Still': 1E-6,  # Fig.1 [2019krinnerEngineeringCryogenicSetups]
+            'CP'   : 180E-9,#0.3E-6,   # (W/channel); from Still plate to CP plate
+            'MXC'  : 2E-9,#20E-9 # (W/channel); from CP plate to MXC plate
             }
 
 PHL_GHOST   = {'RT'   : None,    # (W/channel); from RT flange to 300K flange
