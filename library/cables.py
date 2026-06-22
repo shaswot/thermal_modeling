@@ -25,6 +25,10 @@ PHL_Fiber_Still=2.58114e-08
 PHL_Fiber_CP=2.02211e-09
 PHL_Fiber_MXC=1.89649e-12
 
+PHL_NbTi_Still=3.84088e-05
+PHL_NbTi_CP=7.18361e-06
+PHL_NbTi_MXC=2.12527e-07
+
 
 ####### 2019krinnerEngineeringCryogenicSetups - Fig 1 ##########
 # Values are for TWP i.e., two strands of cables
